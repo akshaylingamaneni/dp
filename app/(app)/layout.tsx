@@ -3,12 +3,10 @@
 import type React from "react"
 import { useCallback, useState } from "react"
 import { Check, Copy, Download, Eye, EyeOff, Shuffle, Upload } from "lucide-react"
-import { BackgroundSelector } from "@/components/background-selector"
-import { FormatSelector } from "@/components/format-selector"
+import { HorizontalControls } from "@/components/horizontal-controls"
+import { HorizontalBackgroundSelector } from "@/components/horizontal-background-selector"
 import { ScreenshotShellProvider } from "@/components/screenshot-shell-context"
 import { Button } from "@/components/ui/button"
-import { Label } from "@/components/ui/label"
-import { Slider } from "@/components/ui/slider"
 import { getFormatById } from "@/lib/formats"
 import { getRandomPattern } from "@/lib/patterns"
 
@@ -174,53 +172,20 @@ export default function AppLayout({
           )}
         </header>
 
-        <div className="flex-1">
-          <div className="grid gap-4 px-4 pb-4 pt-4 sm:px-6 sm:pb-6 lg:grid-cols-[minmax(0,320px)_minmax(0,1fr)] lg:gap-6">
-            <aside className="min-w-0 rounded-lg border border-border bg-background/80 p-4 lg:rounded-none lg:border-0 lg:border-r lg:bg-transparent lg:p-0 lg:pr-6">
-              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-1">
-                <div className="space-y-3">
-                  <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Format</Label>
-                  <FormatSelector selected={selectedFormat} onSelect={setSelectedFormat} />
-                </div>
+        <div className="flex-1 flex flex-col min-h-0">
+          <main
+            className="flex-1 flex items-center justify-center p-4 sm:p-6 lg:p-8 min-h-0"
+            onDrop={handleDrop}
+            onDragOver={handleDragOver}
+          >
+            {children}
+          </main>
 
-                <div className="space-y-3">
-                  <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Padding</Label>
-                  <div className="flex items-center gap-3">
-                    <Slider min={0} max={160} step={8} value={padding} onValueChange={setPadding} className="flex-1" />
-                    <span className="text-xs text-muted-foreground tabular-nums w-10 text-right">{padding[0]}</span>
-                  </div>
-                </div>
-
-                <div className="space-y-3">
-                  <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Radius</Label>
-                  <div className="flex items-center gap-3">
-                    <Slider
-                      min={0}
-                      max={48}
-                      step={4}
-                      value={cornerRadius}
-                      onValueChange={setCornerRadius}
-                      className="flex-1"
-                    />
-                    <span className="text-xs text-muted-foreground tabular-nums w-10 text-right">{cornerRadius[0]}</span>
-                  </div>
-                </div>
-
-                <div className="space-y-3">
-                  <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Shadow</Label>
-                  <div className="flex items-center gap-3">
-                    <Slider min={0} max={100} step={5} value={shadow} onValueChange={setShadow} className="flex-1" />
-                    <span className="text-xs text-muted-foreground tabular-nums w-10 text-right">{shadow[0]}</span>
-                  </div>
-                </div>
-
-                <div className="space-y-3 sm:col-span-2 lg:col-span-1">
-                  <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Background</Label>
-                  <BackgroundSelector selected={selectedBackground} onSelect={setSelectedBackground} />
-                </div>
-
-                <div className="flex gap-2 sm:col-span-2 lg:col-span-1">
-                  <Button variant="outline" size="sm" onClick={handleRandomize} className="flex-1 bg-transparent">
+          <div className="border-t border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
+            <div className="flex flex-col gap-4 py-4">
+              <div className="flex items-center justify-between px-4">
+                <div className="flex items-center gap-2">
+                  <Button variant="outline" size="sm" onClick={handleRandomize} className="bg-transparent">
                     <Shuffle className="h-3.5 w-3.5 mr-2" />
                     Random
                   </Button>
@@ -237,37 +202,43 @@ export default function AppLayout({
                     )}
                     {showBackgroundOnly ? "Image" : "BG"}
                   </Button>
+                  {image && (
+                    <>
+                      <label htmlFor="image-reupload">
+                        <Button variant="outline" size="sm" className="bg-transparent" asChild>
+                          <span className="cursor-pointer">
+                            <Upload className="h-3.5 w-3.5 mr-2" />
+                            Change Image
+                          </span>
+                        </Button>
+                      </label>
+                      <input
+                        id="image-reupload"
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageUpload}
+                        className="hidden"
+                      />
+                    </>
+                  )}
                 </div>
-
-                {image && (
-                  <div className="pt-4 border-t border-border sm:col-span-2 lg:col-span-1">
-                    <label htmlFor="image-reupload">
-                      <Button variant="outline" size="sm" className="w-full bg-transparent" asChild>
-                        <span className="cursor-pointer">
-                          <Upload className="mr-2 h-4 w-4" />
-                          Change Image
-                        </span>
-                      </Button>
-                    </label>
-                    <input
-                      id="image-reupload"
-                      type="file"
-                      accept="image/*"
-                      onChange={handleImageUpload}
-                      className="hidden"
-                    />
-                  </div>
-                )}
               </div>
-            </aside>
 
-            <main
-              className="min-w-0 flex min-h-[60vh] items-center justify-center rounded-lg border border-border bg-muted/30 p-4 sm:p-6 lg:p-8"
-              onDrop={handleDrop}
-              onDragOver={handleDragOver}
-            >
-              {children}
-            </main>
+              <HorizontalControls
+                format={selectedFormat}
+                padding={padding}
+                cornerRadius={cornerRadius}
+                shadow={shadow}
+                onFormatChange={setSelectedFormat}
+                onPaddingChange={setPadding}
+                onCornerRadiusChange={setCornerRadius}
+                onShadowChange={setShadow}
+              />
+
+              <div className="px-4">
+                <HorizontalBackgroundSelector selected={selectedBackground} onSelect={setSelectedBackground} />
+              </div>
+            </div>
           </div>
         </div>
       </div>

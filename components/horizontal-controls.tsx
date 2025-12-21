@@ -15,10 +15,12 @@ interface HorizontalControlsProps {
   padding: number[]
   cornerRadius: number[]
   shadow: number[]
+  canvasSize: number[]
   onFormatChange: (format: string) => void
   onPaddingChange: (padding: number[]) => void
   onCornerRadiusChange: (radius: number[]) => void
   onShadowChange: (shadow: number[]) => void
+  onCanvasSizeChange: (size: number[]) => void
 }
 
 export function HorizontalControls({
@@ -26,10 +28,12 @@ export function HorizontalControls({
   padding,
   cornerRadius,
   shadow,
+  canvasSize,
   onFormatChange,
   onPaddingChange,
   onCornerRadiusChange,
   onShadowChange,
+  onCanvasSizeChange,
 }: HorizontalControlsProps) {
   const scrollAreaRef = useRef<HTMLDivElement>(null)
   const [canScrollLeft, setCanScrollLeft] = useState(false)
@@ -151,6 +155,14 @@ export function HorizontalControls({
             <div className="flex items-center gap-3">
               <Slider min={0} max={100} step={5} value={shadow} onValueChange={onShadowChange} className="flex-1" />
               <span className="text-xs text-muted-foreground tabular-nums w-10 text-right shrink-0">{shadow[0]}</span>
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-2 min-w-[180px] snap-start shrink-0">
+            <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Size</Label>
+            <div className="flex items-center gap-3">
+              <Slider min={10} max={100} step={5} value={canvasSize} onValueChange={onCanvasSizeChange} className="flex-1" />
+              <span className="text-xs text-muted-foreground tabular-nums w-10 text-right shrink-0">{canvasSize[0]}%</span>
             </div>
           </div>
         </div>

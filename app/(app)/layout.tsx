@@ -46,6 +46,7 @@ export default function AppLayout({
   const [padding, setPadding] = useState([64])
   const [cornerRadius, setCornerRadius] = useState([12])
   const [shadow, setShadow] = useState([40])
+  const [canvasSize, setCanvasSize] = useState([50])
   const [selectedBackground, setSelectedBackground] = useState("top-gradient-radial")
   const [selectedFormat, setSelectedFormat] = useState("auto")
   const [canvasRef, setCanvasRef] = useState<HTMLCanvasElement | null>(null)
@@ -139,6 +140,7 @@ export default function AppLayout({
         shadow: shadow[0],
         background: selectedBackground,
         format: selectedFormat,
+        canvasSize: canvasSize[0],
         showBackgroundOnly,
         showCanvas,
         handleImageUpload,
@@ -229,10 +231,12 @@ export default function AppLayout({
                 padding={padding}
                 cornerRadius={cornerRadius}
                 shadow={shadow}
+                canvasSize={canvasSize}
                 onFormatChange={setSelectedFormat}
                 onPaddingChange={setPadding}
                 onCornerRadiusChange={setCornerRadius}
                 onShadowChange={setShadow}
+                onCanvasSizeChange={setCanvasSize}
               />
 
               <div className="px-4">

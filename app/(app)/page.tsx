@@ -13,6 +13,7 @@ export default function Home() {
     shadow,
     background,
     format,
+    canvasSize,
     showBackgroundOnly,
     showCanvas,
     handleImageUpload,
@@ -51,6 +52,7 @@ export default function Home() {
         background={background}
         format={format}
         shadow={shadow}
+        canvasSize={canvasSize}
         showBackgroundOnly={showBackgroundOnly}
         onCanvasReady={handleCanvasReady}
       />

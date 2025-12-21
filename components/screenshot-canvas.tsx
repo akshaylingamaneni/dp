@@ -26,6 +26,7 @@ interface ScreenshotCanvasProps {
   background: string
   format: string
   shadow: number
+  canvasSize: number
   showBackgroundOnly: boolean
   onCanvasReady?: (canvas: HTMLCanvasElement) => void
 }
@@ -37,6 +38,7 @@ export function ScreenshotCanvas({
   background,
   format,
   shadow,
+  canvasSize,
   showBackgroundOnly,
   onCanvasReady,
 }: ScreenshotCanvasProps) {
@@ -114,19 +116,17 @@ export function ScreenshotCanvas({
 
   const canvasStyle = imageDimensions
     ? {
-        width: imageDimensions.width,
-        height: imageDimensions.height,
-        maxWidth: "100%",
-        maxHeight: "100%",
-        aspectRatio: `${imageDimensions.width} / ${imageDimensions.height}`,
-      }
+      maxWidth: `${canvasSize}vw`,
+      maxHeight: `${canvasSize}vh`,
+      aspectRatio: `${imageDimensions.width} / ${imageDimensions.height}`,
+    }
     : {}
 
   return (
-    <div className="flex items-center justify-center w-full h-full relative">
+    <div className="flex items-center justify-center w-full h-full relative" style={{ height: "100%" }}>
       <canvas
         ref={canvasRef}
-        className="max-h-full max-w-full rounded-lg border-4 border-white shadow-2xl"
+        className="rounded-lg border-4 border-white shadow-2xl"
         style={{
           ...canvasStyle,
           boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(0, 0, 0, 0.05)",

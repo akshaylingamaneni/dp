@@ -10,6 +10,7 @@ export type ScreenshotShellContextValue = {
   shadow: number
   background: string
   format: string
+  canvasSize: number
   showBackgroundOnly: boolean
   showCanvas: boolean
   handleImageUpload: (event: React.ChangeEvent<HTMLInputElement>) => void

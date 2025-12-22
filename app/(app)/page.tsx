@@ -41,7 +41,7 @@ export default function Home() {
             </span>
           </Button>
         </label>
-        <input id="image-upload" type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
+        <input id="image-upload" type="file" accept="image/*" multiple onChange={handleImageUpload} className="hidden" />
       </div>
     )
   }

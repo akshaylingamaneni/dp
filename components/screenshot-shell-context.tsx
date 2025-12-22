@@ -25,8 +25,16 @@ export type TextSettings = {
   textGradient: string
 }
 
+export type ImageItem = {
+  id: string
+  src: string
+  name: string
+}
+
 export type ScreenshotShellContextValue = {
   image: string | null
+  images: ImageItem[]
+  activeIndex: number
   padding: number
   cornerRadius: number
   shadow: number
@@ -39,7 +47,10 @@ export type ScreenshotShellContextValue = {
   showBackgroundOnly: boolean
   showCanvas: boolean
   handleImageUpload: (event: React.ChangeEvent<HTMLInputElement>) => void
-  handleCanvasReady: (canvas: HTMLCanvasElement) => void
+  handleCanvasReady: (canvas: HTMLCanvasElement, imageId?: string) => void
+  setActiveIndex: (index: number) => void
+  reorderImages: (fromIndex: number, toIndex: number) => void
+  removeImage: (index: number) => void
 }
 
 const ScreenshotShellContext = createContext<ScreenshotShellContextValue | null>(null)

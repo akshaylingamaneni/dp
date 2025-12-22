@@ -5,7 +5,7 @@ import { useCallback, useState } from "react"
 import { Check, Copy, Download, Eye, EyeOff, Shuffle, Upload } from "lucide-react"
 import { HorizontalControls } from "@/components/horizontal-controls"
 import { HorizontalBackgroundSelector } from "@/components/horizontal-background-selector"
-import { ScreenshotShellProvider, type ShadowSettings } from "@/components/screenshot-shell-context"
+import { ScreenshotShellProvider, type ShadowSettings, type CornerTexts, type TextSettings } from "@/components/screenshot-shell-context"
 import { Button } from "@/components/ui/button"
 import { getFormatById } from "@/lib/formats"
 import { getRandomPattern } from "@/lib/patterns"
@@ -51,6 +51,17 @@ export default function AppLayout({
     shadowOffsetX: 0,
     shadowOffsetY: 10,
     fillStyle: "rgba(0, 0, 0, 0.5)",
+  })
+  const [cornerTexts, setCornerTexts] = useState<CornerTexts>({
+    topLeft: "",
+    topRight: "",
+    bottomLeft: "",
+    bottomRight: "",
+  })
+  const [textSettings, setTextSettings] = useState<TextSettings>({
+    fontSize: 24,
+    textColor: "#000000",
+    fontFamily: "Geist",
   })
   const [canvasSize, setCanvasSize] = useState([50])
   const [selectedBackground, setSelectedBackground] = useState("top-gradient-radial")
@@ -145,6 +156,8 @@ export default function AppLayout({
         cornerRadius: cornerRadius[0],
         shadow: shadow[0],
         shadowSettings,
+        cornerTexts,
+        textSettings,
         background: selectedBackground,
         format: selectedFormat,
         canvasSize: canvasSize[0],
@@ -239,12 +252,16 @@ export default function AppLayout({
                 cornerRadius={cornerRadius}
                 shadow={shadow}
                 shadowSettings={shadowSettings}
+                cornerTexts={cornerTexts}
+                textSettings={textSettings}
                 canvasSize={canvasSize}
                 onFormatChange={setSelectedFormat}
                 onPaddingChange={setPadding}
                 onCornerRadiusChange={setCornerRadius}
                 onShadowChange={setShadow}
                 onShadowSettingsChange={setShadowSettings}
+                onCornerTextsChange={setCornerTexts}
+                onTextSettingsChange={setTextSettings}
                 onCanvasSizeChange={setCanvasSize}
               />
 

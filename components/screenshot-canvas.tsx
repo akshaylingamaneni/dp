@@ -4,7 +4,7 @@ import type { CSSProperties } from "react"
 import { useCallback, useEffect, useRef, useState } from "react"
 import { getFormatById } from "@/lib/formats"
 import { getPatternById } from "@/lib/patterns"
-import type { ShadowSettings } from "@/components/screenshot-shell-context"
+import type { ShadowSettings, CornerTexts, TextSettings } from "@/components/screenshot-shell-context"
 
 const DEFAULT_CANVAS_SIZE = { width: 1200, height: 800 }
 const MAX_DPR = 2
@@ -28,6 +28,8 @@ interface ScreenshotCanvasProps {
   format: string
   shadow: number
   shadowSettings: ShadowSettings
+  cornerTexts: CornerTexts
+  textSettings: TextSettings
   canvasSize: number
   showBackgroundOnly: boolean
   onCanvasReady?: (canvas: HTMLCanvasElement) => void
@@ -41,6 +43,8 @@ export function ScreenshotCanvas({
   format,
   shadow,
   shadowSettings,
+  cornerTexts,
+  textSettings,
   canvasSize,
   showBackgroundOnly,
   onCanvasReady,
@@ -69,7 +73,9 @@ export function ScreenshotCanvas({
     }
 
     if (showBackgroundOnly || !image) {
-      renderBackground(resolveCanvasSize(selectedFormat))
+      const size = resolveCanvasSize(selectedFormat)
+      renderBackground(size)
+      drawCornerTexts(ctx, size.width, size.height, cornerTexts, textSettings, padding)
       onCanvasReady?.(canvas)
       return
     }
@@ -102,6 +108,8 @@ export function ScreenshotCanvas({
       ctx.drawImage(img, layout.x, layout.y, layout.drawWidth, layout.drawHeight)
       ctx.restore()
 
+      drawCornerTexts(ctx, layout.canvasWidth, layout.canvasHeight, cornerTexts, textSettings, padding)
+
       onCanvasReady?.(canvas)
     }
 
@@ -112,7 +120,7 @@ export function ScreenshotCanvas({
     }
 
     img.src = image
-  }, [image, padding, cornerRadius, background, format, shadow, shadowSettings, showBackgroundOnly, onCanvasReady])
+  }, [image, padding, cornerRadius, background, format, shadow, shadowSettings, cornerTexts, textSettings, showBackgroundOnly, onCanvasReady])
 
   useEffect(() => {
     drawCanvas()
@@ -1326,4 +1334,45 @@ function roundRect(ctx: CanvasRenderingContext2D, x: number, y: number, width: n
   ctx.lineTo(x, y + r)
   ctx.quadraticCurveTo(x, y, x + r, y)
   ctx.closePath()
+}
+
+function drawCornerTexts(
+  ctx: CanvasRenderingContext2D,
+  canvasWidth: number,
+  canvasHeight: number,
+  cornerTexts: CornerTexts,
+  textSettings: TextSettings,
+  canvasPadding: number,
+) {
+  const textPadding = Math.max(16, canvasPadding * 0.25)
+
+  ctx.save()
+  ctx.font = `${textSettings.fontSize}px ${textSettings.fontFamily}`
+  ctx.fillStyle = textSettings.textColor
+
+  if (cornerTexts.topLeft) {
+    ctx.textAlign = "left"
+    ctx.textBaseline = "top"
+    ctx.fillText(cornerTexts.topLeft, textPadding, textPadding)
+  }
+
+  if (cornerTexts.topRight) {
+    ctx.textAlign = "right"
+    ctx.textBaseline = "top"
+    ctx.fillText(cornerTexts.topRight, canvasWidth - textPadding, textPadding)
+  }
+
+  if (cornerTexts.bottomLeft) {
+    ctx.textAlign = "left"
+    ctx.textBaseline = "bottom"
+    ctx.fillText(cornerTexts.bottomLeft, textPadding, canvasHeight - textPadding)
+  }
+
+  if (cornerTexts.bottomRight) {
+    ctx.textAlign = "right"
+    ctx.textBaseline = "bottom"
+    ctx.fillText(cornerTexts.bottomRight, canvasWidth - textPadding, canvasHeight - textPadding)
+  }
+
+  ctx.restore()
 }

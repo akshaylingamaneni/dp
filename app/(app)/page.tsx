@@ -12,6 +12,8 @@ export default function Home() {
     cornerRadius,
     shadow,
     shadowSettings,
+    cornerTexts,
+    textSettings,
     background,
     format,
     canvasSize,
@@ -54,6 +56,8 @@ export default function Home() {
         format={format}
         shadow={shadow}
         shadowSettings={shadowSettings}
+        cornerTexts={cornerTexts}
+        textSettings={textSettings}
         canvasSize={canvasSize}
         showBackgroundOnly={showBackgroundOnly}
         onCanvasReady={handleCanvasReady}

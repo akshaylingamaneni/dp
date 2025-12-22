@@ -10,12 +10,27 @@ export type ShadowSettings = {
   fillStyle: string
 }
 
+export type CornerTexts = {
+  topLeft: string
+  topRight: string
+  bottomLeft: string
+  bottomRight: string
+}
+
+export type TextSettings = {
+  fontSize: number
+  textColor: string
+  fontFamily: string
+}
+
 export type ScreenshotShellContextValue = {
   image: string | null
   padding: number
   cornerRadius: number
   shadow: number
   shadowSettings: ShadowSettings
+  cornerTexts: CornerTexts
+  textSettings: TextSettings
   background: string
   format: string
   canvasSize: number

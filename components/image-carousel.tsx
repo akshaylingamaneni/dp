@@ -3,6 +3,7 @@
 import { X } from "lucide-react"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
+import { ScrollArea } from "@/components/ui/scroll-area"
 import { cn } from "@/lib/utils"
 import type { ImageItem } from "@/components/screenshot-shell-context"
 
@@ -58,50 +59,54 @@ export function ImageCarousel({ images, activeIndex, onSelect, onReorder, onRemo
 
   return (
     <div className="w-full border-b border-border bg-background/95 backdrop-blur">
-      <div className="flex items-center gap-2 px-4 py-5 overflow-x-auto">
+      <div className="flex items-center gap-2 px-4 py-5">
         <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider shrink-0">
           Images ({images.length})
         </span>
-        <div className="flex items-center gap-4 flex-1">
-          {images.map((image, index) => (
-            <div
-              key={image.id}
-              draggable
-              onDragStart={handleDragStart(index)}
-              onDragOver={handleDragOver(index)}
-              onDragLeave={handleDragLeave}
-              onDrop={handleDrop(index)}
-              onDragEnd={handleDragEnd}
-              onClick={() => onSelect(index)}
-              className={cn(
-                "relative group shrink-0 cursor-pointer transition-all",
-                "w-32 h-32 rounded-lg border overflow-hidden",
-                activeIndex === index
-                  ? "shadow-md border-border ring-1 ring-primary/70"
-                  : "border-border hover:border-muted-foreground",
-                draggedIndex === index && "opacity-50",
-                dragOverIndex === index && draggedIndex !== index && "scale-110 border-primary"
-              )}
-            >
-              <img
-                src={image.src}
-                alt={image.name}
-                className="w-full h-full object-cover"
-                draggable={false}
-              />
-              <Button
-                variant="destructive"
-                size="icon"
-                className="absolute top-1 right-1 h-5 w-5 opacity-0 group-hover:opacity-100 transition-opacity shadow-lg"
-                onClick={handleRemove(index)}
-              >
-                <X className="h-3 w-3" />
-              </Button>
-              {activeIndex === index && (
-                <div className="absolute inset-0  pointer-events-none" />
-              )}
+        <div className="flex-1 min-w-0">
+          <ScrollArea className="w-full" orientation="horizontal">
+            <div className="flex items-center gap-4 pb-2 min-w-max">
+              {images.map((image, index) => (
+                <div
+                  key={image.id}
+                  draggable
+                  onDragStart={handleDragStart(index)}
+                  onDragOver={handleDragOver(index)}
+                  onDragLeave={handleDragLeave}
+                  onDrop={handleDrop(index)}
+                  onDragEnd={handleDragEnd}
+                  onClick={() => onSelect(index)}
+                  className={cn(
+                    "relative group shrink-0 cursor-pointer transition-all",
+                    "w-32 h-32 rounded-lg border overflow-hidden",
+                    activeIndex === index
+                      ? "shadow-md border-border ring-1 ring-primary/70"
+                      : "border-border hover:border-muted-foreground",
+                    draggedIndex === index && "opacity-50",
+                    dragOverIndex === index && draggedIndex !== index && "scale-110 border-primary"
+                  )}
+                >
+                  <img
+                    src={image.src}
+                    alt={image.name}
+                    className="w-full h-full object-cover"
+                    draggable={false}
+                  />
+                  <Button
+                    variant="destructive"
+                    size="icon"
+                    className="absolute top-1 right-1 h-5 w-5 opacity-0 group-hover:opacity-100 transition-opacity shadow-lg"
+                    onClick={handleRemove(index)}
+                  >
+                    <X className="h-3 w-3" />
+                  </Button>
+                  {activeIndex === index && (
+                    <div className="absolute inset-0  pointer-events-none" />
+                  )}
+                </div>
+              ))}
             </div>
-          ))}
+          </ScrollArea>
         </div>
       </div>
     </div>

@@ -4,6 +4,7 @@ import type { CSSProperties } from "react"
 import { useCallback, useEffect, useRef, useState } from "react"
 import { getFormatById } from "@/lib/formats"
 import { getPatternById } from "@/lib/patterns"
+import type { ShadowSettings } from "@/components/screenshot-shell-context"
 
 const DEFAULT_CANVAS_SIZE = { width: 1200, height: 800 }
 const MAX_DPR = 2
@@ -26,6 +27,7 @@ interface ScreenshotCanvasProps {
   background: string
   format: string
   shadow: number
+  shadowSettings: ShadowSettings
   canvasSize: number
   showBackgroundOnly: boolean
   onCanvasReady?: (canvas: HTMLCanvasElement) => void
@@ -38,6 +40,7 @@ export function ScreenshotCanvas({
   background,
   format,
   shadow,
+  shadowSettings,
   canvasSize,
   showBackgroundOnly,
   onCanvasReady,
@@ -83,11 +86,11 @@ export function ScreenshotCanvas({
       const shadowBlur = Math.max(0, shadow)
       if (shadowBlur > 0) {
         ctx.save()
-        ctx.shadowColor = "rgba(0, 0, 0, 0.4)"
+        ctx.shadowColor = shadowSettings.shadowColor
         ctx.shadowBlur = shadowBlur
-        ctx.shadowOffsetX = 0
-        ctx.shadowOffsetY = shadowBlur / 4
-        ctx.fillStyle = "rgba(0, 0, 0, 0)"
+        ctx.shadowOffsetX = shadowSettings.shadowOffsetX
+        ctx.shadowOffsetY = shadowSettings.shadowOffsetY
+        ctx.fillStyle = shadowSettings.fillStyle
         roundRect(ctx, layout.x, layout.y, layout.drawWidth, layout.drawHeight, cornerRadius)
         ctx.fill()
         ctx.restore()
@@ -109,7 +112,7 @@ export function ScreenshotCanvas({
     }
 
     img.src = image
-  }, [image, padding, cornerRadius, background, format, shadow, showBackgroundOnly, onCanvasReady])
+  }, [image, padding, cornerRadius, background, format, shadow, shadowSettings, showBackgroundOnly, onCanvasReady])
 
   useEffect(() => {
     drawCanvas()

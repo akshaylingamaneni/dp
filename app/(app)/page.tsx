@@ -11,6 +11,7 @@ export default function Home() {
     padding,
     cornerRadius,
     shadow,
+    shadowSettings,
     background,
     format,
     canvasSize,
@@ -52,6 +53,7 @@ export default function Home() {
         background={background}
         format={format}
         shadow={shadow}
+        shadowSettings={shadowSettings}
         canvasSize={canvasSize}
         showBackgroundOnly={showBackgroundOnly}
         onCanvasReady={handleCanvasReady}

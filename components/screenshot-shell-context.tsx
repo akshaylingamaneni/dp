@@ -3,11 +3,19 @@
 import type React from "react"
 import { createContext, useContext } from "react"
 
+export type ShadowSettings = {
+  shadowColor: string
+  shadowOffsetX: number
+  shadowOffsetY: number
+  fillStyle: string
+}
+
 export type ScreenshotShellContextValue = {
   image: string | null
   padding: number
   cornerRadius: number
   shadow: number
+  shadowSettings: ShadowSettings
   background: string
   format: string
   canvasSize: number

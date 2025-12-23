@@ -58,14 +58,14 @@ export function ImageCarousel({ images, activeIndex, onSelect, onReorder, onRemo
   }
 
   return (
-    <div className="w-full border-b border-border bg-background/95 backdrop-blur">
+    <div className="w-full border-b border-border bg-background/95 backdrop-blur ">
       <div className="flex items-center gap-2 px-4 py-5">
         <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider shrink-0">
           Images ({images.length})
         </span>
         <div className="flex-1 min-w-0">
           <ScrollArea className="w-full" orientation="horizontal">
-            <div className="flex items-center gap-4 pb-2 min-w-max">
+            <div className="flex items-center gap-4 py-2 px-2 min-w-max">
               {images.map((image, index) => (
                 <div
                   key={image.id}

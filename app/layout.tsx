@@ -51,7 +51,7 @@ export const metadata: Metadata = {
     description: siteDescription,
     images: [
       {
-        url: `${siteUrl}/opengraph-image`,
+        url: `${siteUrl}/og-image.png`,
         width: 1200,
         height: 630,
         alt: `${siteName} - Create beautiful screenshots with gradient backgrounds`,
@@ -62,7 +62,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: `${siteName} - Beautiful Screenshot Backgrounds`,
     description: siteDescription,
-    images: [`${siteUrl}/opengraph-image`],
+    images: [`${siteUrl}/og-image.png`],
     creator: "@screenshotcomposer",
   },
   robots: {
@@ -78,7 +78,9 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: "/file-sliders.svg", type: "image/svg+xml" },
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/favicon-96x96.png", sizes: "96x96", type: "image/png" },
     ],
     apple: [
       { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },

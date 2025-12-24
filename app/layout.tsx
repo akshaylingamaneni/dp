@@ -8,7 +8,10 @@ import "./globals.css"
 const geist = Geist({ subsets: ["latin"], variable: "--font-geist" })
 const geistMono = Geist_Mono({ subsets: ["latin"], variable: "--font-geist-mono" })
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://screenshot-composer.vercel.app"
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL
+if (!siteUrl) {
+  throw new Error("NEXT_PUBLIC_SITE_URL is not set")
+}
 const siteName = "Screenshot Composer"
 const siteDescription = "Create beautiful screenshots with gradient backgrounds, customizable padding, shadows, and corner styling. 100% free and open source."
 
@@ -48,7 +51,7 @@ export const metadata: Metadata = {
     description: siteDescription,
     images: [
       {
-        url: "/og-image.png",
+        url: `${siteUrl}/opengraph-image`,
         width: 1200,
         height: 630,
         alt: `${siteName} - Create beautiful screenshots with gradient backgrounds`,
@@ -59,7 +62,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: `${siteName} - Beautiful Screenshot Backgrounds`,
     description: siteDescription,
-    images: ["/og-image.png"],
+    images: [`${siteUrl}/opengraph-image`],
     creator: "@screenshotcomposer",
   },
   robots: {

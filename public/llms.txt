@@ -48,7 +48,7 @@ This project is open source. All processing happens client-side in your browser 
 
 ## URL
 
-https://screenshot-composer.vercel.app
+https://sc.neurocollab.in/
 
 ## Contact
 

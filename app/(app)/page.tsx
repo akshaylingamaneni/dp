@@ -1,6 +1,8 @@
 "use client"
 
 import { motion } from "framer-motion"
+import Link from "next/link"
+import { Github, ExternalLink } from "lucide-react"
 import { ScreenshotCanvas } from "@/components/screenshot-canvas"
 import { useScreenshotShell } from "@/components/screenshot-shell-context"
 import { ShowcaseSlider } from "@/components/showcase-slider"
@@ -47,7 +49,7 @@ export default function Home() {
           </div>
 
           <div className="hidden lg:block">
-            <h1 className="font-serif text-4xl font-bold tracking-tight text-white xl:text-5xl 2xl:text-6xl">
+            <h1 className="text-4xl font-bold tracking-tight text-white xl:text-5xl 2xl:text-6xl">
               Screenshot
               <br />
               <span className="text-white/50">Composer</span>
@@ -59,8 +61,17 @@ export default function Home() {
               <li className="rounded-full border border-white/15 bg-neutral-950/45 px-3 py-1 text-xs text-white/60">
                 100% Free
               </li>
-              <li className="rounded-full border border-white/15 bg-neutral-950/45 px-3 py-1 text-xs text-white/60">
-                Clean UI
+              <li className="pointer-events-auto">
+                <Link
+                  href="https://github.com/akshaylingamaneni/ScreenshotComposer"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-neutral-950/45 px-3 py-1 text-xs text-white/60 transition-colors hover:border-white/25 hover:bg-neutral-950/65 hover:text-white/80"
+                >
+                  <Github className="h-3 w-3" />
+                  GitHub
+                  <ExternalLink className="h-2.5 w-2.5" />
+                </Link>
               </li>
             </ul>
           </div>

@@ -26,24 +26,24 @@ export default function Home() {
 
   if (!showCanvas) {
     return (
-      <div className="absolute inset-0 overflow-hidden">
+      <section className="absolute inset-0 overflow-hidden" aria-label="Screenshot Composer landing">
         <ShowcaseSlider showUploadOverlay onImageUpload={handleImageUpload} />
 
-        <motion.div
+        <motion.header
           initial={{ opacity: 0, x: -10 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, delay: 0.4 }}
           className="pointer-events-none absolute left-4 top-4 z-20 sm:left-6 sm:top-6 lg:bottom-0 lg:left-10 lg:top-0 lg:flex lg:max-w-sm lg:flex-col lg:justify-center xl:left-14 xl:max-w-md"
         >
           <div className="lg:hidden">
-            <p className="text-sm font-medium text-white/90">
+            <h1 className="text-sm font-medium text-white/90">
               Screenshot <span className="text-white/50">Composer</span>
-            </p>
-            <div className="mt-1.5 flex gap-1.5">
+            </h1>
+            <p className="mt-1.5 flex gap-1.5">
               <span className="text-[10px] text-white/40">Open Source</span>
-              <span className="text-white/20">·</span>
+              <span className="text-white/20" aria-hidden="true">·</span>
               <span className="text-[10px] text-white/40">Free</span>
-            </div>
+            </p>
           </div>
 
           <div className="hidden lg:block">
@@ -52,25 +52,28 @@ export default function Home() {
               <br />
               <span className="text-white/50">Composer</span>
             </h1>
-            <div className="mt-5 flex flex-wrap gap-2 xl:mt-6">
-              <span className="rounded-full border border-white/15 bg-neutral-950/45 px-3 py-1 text-xs text-white/60">
+            <ul className="mt-5 flex flex-wrap gap-2 xl:mt-6 list-none" aria-label="Features">
+              <li className="rounded-full border border-white/15 bg-neutral-950/45 px-3 py-1 text-xs text-white/60">
                 Open Source
-              </span>
-              <span className="rounded-full border border-white/15 bg-neutral-950/45 px-3 py-1 text-xs text-white/60">
+              </li>
+              <li className="rounded-full border border-white/15 bg-neutral-950/45 px-3 py-1 text-xs text-white/60">
                 100% Free
-              </span>
-              <span className="rounded-full border border-white/15 bg-neutral-950/45 px-3 py-1 text-xs text-white/60">
+              </li>
+              <li className="rounded-full border border-white/15 bg-neutral-950/45 px-3 py-1 text-xs text-white/60">
                 Clean UI
-              </span>
-            </div>
+              </li>
+            </ul>
           </div>
-        </motion.div>
-      </div>
+        </motion.header>
+      </section>
     )
   }
 
   return (
-    <div className="w-full h-full flex items-center justify-center p-4 sm:p-6 lg:p-8">
+    <section
+      className="w-full h-full flex items-center justify-center p-4 sm:p-6 lg:p-8"
+      aria-label="Screenshot editor"
+    >
       <ScreenshotCanvas
         image={image}
         padding={padding}
@@ -86,6 +89,6 @@ export default function Home() {
         showBackgroundOnly={showBackgroundOnly}
         onCanvasReady={handleCanvasReady}
       />
-    </div>
+    </section>
   )
 }

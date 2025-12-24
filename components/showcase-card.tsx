@@ -54,7 +54,7 @@ export function ShowcaseCard({ item, isActive, dragOffset, index, currentIndex, 
         <div className="relative h-[320px] w-[320px] overflow-hidden rounded-2xl p-2 sm:h-[380px] sm:w-[380px] md:h-[440px] md:w-[440px]">
           <motion.img
             src={item.image}
-            alt={item.title}
+            alt={item.alt || item.title}
             className="h-full w-full rounded-xl object-cover"
             animate={{
               scale: isHovered && isActive ? 1.05 : 1,
@@ -62,6 +62,7 @@ export function ShowcaseCard({ item, isActive, dragOffset, index, currentIndex, 
             transition={{ duration: 0.4, ease: "easeOut" }}
             crossOrigin="anonymous"
             draggable={false}
+            loading="lazy"
           />
 
           <motion.div

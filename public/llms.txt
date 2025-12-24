@@ -1,0 +1,56 @@
+# Screenshot Composer
+
+> A free, open-source web tool for creating beautiful screenshots with gradient backgrounds and professional styling.
+
+## What is Screenshot Composer?
+
+Screenshot Composer is a browser-based tool that transforms plain screenshots into visually stunning images. It adds customizable gradient backgrounds, adjusts padding, applies rounded corners, and adds shadows to make your screenshots look professional and polished.
+
+## Key Features
+
+- **Gradient Backgrounds**: Choose from a variety of beautiful gradient patterns and solid colors
+- **Customizable Padding**: Adjust the spacing around your screenshot
+- **Corner Radius**: Apply rounded corners with adjustable radius
+- **Shadow Effects**: Add depth with customizable shadow settings (color, offset, blur)
+- **Batch Processing**: Upload and process multiple images at once
+- **Apply to All**: Apply the same style to all images in a batch
+- **Corner Text Labels**: Add text overlays in any corner with font and opacity controls
+- **Format Presets**: Export in various aspect ratios (16:9, 4:3, 1:1, etc.)
+- **Multiple Export Options**: Download individual images, export all, or download as ZIP
+- **Copy to Clipboard**: Instantly copy styled screenshots
+- **Drag & Drop**: Easy image uploading with drag and drop support
+- **Reorder Images**: Drag to reorder images in batch mode
+
+## Use Cases
+
+- Creating polished screenshots for app stores and product pages
+- Preparing images for blog posts and documentation
+- Making social media graphics from screenshots
+- Building consistent screenshot sets for presentations
+- Beautifying code screenshots for tutorials
+
+## Technology Stack
+
+- Next.js 16
+- React 19
+- TypeScript
+- Tailwind CSS
+- Framer Motion for animations
+- Canvas API for image processing
+
+## Pricing
+
+100% Free. No watermarks. No sign-up required.
+
+## Open Source
+
+This project is open source. All processing happens client-side in your browser - your images never leave your device.
+
+## URL
+
+https://screenshot-composer.vercel.app
+
+## Contact
+
+For questions or feedback about Screenshot Composer, please open an issue on the GitHub repository.
+

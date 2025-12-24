@@ -1,0 +1,32 @@
+{
+  "name": "Screenshot Composer",
+  "short_name": "Screenshot Composer",
+  "description": "Create beautiful screenshots with gradient backgrounds and simple styling. Free and open source.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/file-sliders.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "categories": [
+    "design",
+    "graphics",
+    "utilities"
+  ],
+  "screenshots": [
+    {
+      "src": "/og-image.png",
+      "sizes": "1200x630",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Screenshot Composer interface"
+    }
+  ]
+}

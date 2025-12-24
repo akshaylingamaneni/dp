@@ -521,21 +521,22 @@ export default function AppLayout({
     >
       <div className="min-h-screen bg-background flex flex-col">
         {showCanvas && (
-          <header className="border-b border-border bg-background/80 backdrop-blur-sm px-4 py-2.5 sm:px-6 flex items-center justify-between">
+          <header className="border-b border-border bg-background/80 backdrop-blur-sm px-4 py-2.5 sm:px-6 flex items-center justify-between" role="banner">
             <div className="flex items-center gap-2">
-              <div className="flex h-7 w-7 items-center justify-center rounded-md bg-primary/10">
+              <div className="flex h-7 w-7 items-center justify-center rounded-md bg-primary/10" aria-hidden="true">
                 <FileSliders className="h-4 w-4 text-primary" />
               </div>
               <span className="text-sm font-medium text-foreground hidden sm:inline">Screenshot Composer</span>
             </div>
-            <div className="flex items-center gap-1.5 sm:gap-2">
+            <nav className="flex items-center gap-1.5 sm:gap-2" aria-label="Actions">
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={handleCopyToClipboard}
                 className="h-8 px-2 sm:px-3 text-muted-foreground hover:text-foreground"
+                aria-label={copied ? "Image copied to clipboard" : "Copy image to clipboard"}
               >
-                {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                {copied ? <Check className="h-4 w-4" aria-hidden="true" /> : <Copy className="h-4 w-4" aria-hidden="true" />}
                 <span className="ml-1.5 hidden sm:inline">{copied ? "Copied" : "Copy"}</span>
               </Button>
               {hasMultipleImages ? (
@@ -578,12 +579,12 @@ export default function AppLayout({
                   </PopoverContent>
                 </Popover>
               ) : (
-                <Button onClick={handleExport} size="sm" className="h-8 px-2 sm:px-3">
-                  <Download className="h-4 w-4" />
+                <Button onClick={handleExport} size="sm" className="h-8 px-2 sm:px-3" aria-label="Export current image">
+                  <Download className="h-4 w-4" aria-hidden="true" />
                   <span className="ml-1.5 hidden sm:inline">Export</span>
                 </Button>
               )}
-            </div>
+            </nav>
           </header>
         )}
 
@@ -605,12 +606,12 @@ export default function AppLayout({
             {children}
           </main>
 
-          <div className="border-t border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
+          <aside className="border-t border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80" aria-label="Editor controls">
             <div className="flex flex-col gap-4 py-4">
               <div className="flex items-center justify-between px-4">
-                <div className="flex items-center gap-2">
-                  <Button variant="outline" size="sm" onClick={handleRandomize} className="bg-transparent">
-                    <Shuffle className="h-3.5 w-3.5 mr-2" />
+                <div className="flex items-center gap-2" role="toolbar" aria-label="Quick actions">
+                  <Button variant="outline" size="sm" onClick={handleRandomize} className="bg-transparent" aria-label="Randomize background">
+                    <Shuffle className="h-3.5 w-3.5 mr-2" aria-hidden="true" />
                     Random
                   </Button>
                   <Button
@@ -618,11 +619,13 @@ export default function AppLayout({
                     size="sm"
                     onClick={handleTogglePreview}
                     className={showBackgroundOnly ? "" : "bg-transparent"}
+                    aria-label={showBackgroundOnly ? "Show image" : "Preview background only"}
+                    aria-pressed={showBackgroundOnly}
                   >
                     {showBackgroundOnly ? (
-                      <EyeOff className="h-3.5 w-3.5 mr-2" />
+                      <EyeOff className="h-3.5 w-3.5 mr-2" aria-hidden="true" />
                     ) : (
-                      <Eye className="h-3.5 w-3.5 mr-2" />
+                      <Eye className="h-3.5 w-3.5 mr-2" aria-hidden="true" />
                     )}
                     {showBackgroundOnly ? "Image" : "BG"}
                   </Button>
@@ -686,7 +689,7 @@ export default function AppLayout({
                 <HorizontalBackgroundSelector selected={effectiveBackground} onSelect={handleBackgroundChange} />
               </div>
             </div>
-          </div>
+          </aside>
         </div>
       </div>
     </ScreenshotShellProvider>

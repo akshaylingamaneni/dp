@@ -3,5 +3,6 @@ export interface ShowcaseItem {
   title: string
   description: string
   image: string
+  alt?: string
 }
 

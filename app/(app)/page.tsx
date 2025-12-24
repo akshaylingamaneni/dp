@@ -56,7 +56,7 @@ export default function Home() {
               <span className="rounded-full border border-white/15 bg-neutral-950/45 px-3 py-1 text-xs text-white/60">
                 Open Source
               </span>
-              <span className="rounded-full border border-white/15 bg-neutral-950 /45 px-3 py-1 text-xs text-white/60">
+              <span className="rounded-full border border-white/15 bg-neutral-950/45 px-3 py-1 text-xs text-white/60">
                 100% Free
               </span>
               <span className="rounded-full border border-white/15 bg-neutral-950/45 px-3 py-1 text-xs text-white/60">

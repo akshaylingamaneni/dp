@@ -8,25 +8,15 @@ const _geist = Geist({ subsets: ["latin"] })
 const _geistMono = Geist_Mono({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Screenshot Beautifier - Create Stunning Backgrounds",
-  description: "Upload screenshots and apply beautiful gradient backgrounds with customizable padding and styling",
-  generator: "v0.app",
+  title: "Screenshot Composer - Make screenshots beautiful",
+  description: "Upload screenshots and apply beautiful gradient backgrounds with customizable padding and styling, 100% free and open source",
   icons: {
     icon: [
       {
-        url: "/icon-light-32x32.png",
-        media: "(prefers-color-scheme: light)",
-      },
-      {
-        url: "/icon-dark-32x32.png",
-        media: "(prefers-color-scheme: dark)",
-      },
-      {
-        url: "/icon.svg",
+        url: "/file-sliders.svg",
         type: "image/svg+xml",
       },
     ],
-    apple: "/apple-icon.png",
   },
 }
 

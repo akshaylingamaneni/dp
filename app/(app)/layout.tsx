@@ -2,7 +2,7 @@
 
 import type React from "react"
 import { useCallback, useRef, useState } from "react"
-import { Check, ChevronDown, Copy, Download, Eye, EyeOff, Shuffle, Upload } from "lucide-react"
+import { Check, ChevronDown, Copy, Download, Eye, EyeOff, FileSliders, Shuffle, Upload } from "lucide-react"
 import JSZip from "jszip"
 import { HorizontalControls } from "@/components/horizontal-controls"
 import { HorizontalBackgroundSelector } from "@/components/horizontal-background-selector"
@@ -521,68 +521,66 @@ export default function AppLayout({
     >
       <div className="min-h-screen bg-background flex flex-col">
         {showCanvas && (
-          <header className="border-b border-border px-4 py-3 sm:px-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <header className="border-b border-border bg-background/80 backdrop-blur-sm px-4 py-2.5 sm:px-6 flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <svg className="h-5 w-5 text-foreground" viewBox="0 0 76 65" fill="currentColor">
-                <path d="M37.5274 0L75.0548 65H0L37.5274 0Z" />
-              </svg>
-              <span className="text-sm font-medium text-foreground">Screenshot</span>
+              <div className="flex h-7 w-7 items-center justify-center rounded-md bg-primary/10">
+                <FileSliders className="h-4 w-4 text-primary" />
+              </div>
+              <span className="text-sm font-medium text-foreground hidden sm:inline">Screenshot Composer</span>
             </div>
-            <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto sm:justify-end">
+            <div className="flex items-center gap-1.5 sm:gap-2">
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={handleCopyToClipboard}
-                className="text-muted-foreground hover:text-foreground"
+                className="h-8 px-2 sm:px-3 text-muted-foreground hover:text-foreground"
               >
-                {copied ? <Check className="h-4 w-4 mr-2" /> : <Copy className="h-4 w-4 mr-2" />}
-                {copied ? "Copied" : "Copy"}
+                {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                <span className="ml-1.5 hidden sm:inline">{copied ? "Copied" : "Copy"}</span>
               </Button>
               {hasMultipleImages ? (
                 <Popover>
                   <PopoverTrigger asChild>
-                    <Button size="sm">
-                      <Download className="h-4 w-4 mr-2" />
-                      Export
-                      <ChevronDown className="h-4 w-4 ml-1" />
+                    <Button size="sm" className="h-8 px-2 sm:px-3">
+                      <Download className="h-4 w-4" />
+                      <span className="ml-1.5 hidden sm:inline">Export</span>
+                      <ChevronDown className="h-3.5 w-3.5 ml-1 opacity-60" />
                     </Button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-48" align="end">
-                    <div className="flex flex-col gap-1">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={handleExport}
-                        className="justify-start"
-                      >
-                        <Download className="h-4 w-4 mr-2" />
-                        Current Image
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={handleExportAll}
-                        className="justify-start"
-                      >
-                        <Download className="h-4 w-4 mr-2" />
-                        All Images
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={handleExportZip}
-                        className="justify-start"
-                      >
-                        <Download className="h-4 w-4 mr-2" />
-                        Download as ZIP
-                      </Button>
-                    </div>
+                  <PopoverContent className="w-44 p-1" align="end">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={handleExport}
+                      className="w-full justify-start h-8 px-2 text-sm"
+                    >
+                      <Download className="h-3.5 w-3.5 mr-2 opacity-60" />
+                      Current
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={handleExportAll}
+                      className="w-full justify-start h-8 px-2 text-sm"
+                    >
+                      <Download className="h-3.5 w-3.5 mr-2 opacity-60" />
+                      All Images
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={handleExportZip}
+                      className="w-full justify-start h-8 px-2 text-sm"
+                    >
+                      <Download className="h-3.5 w-3.5 mr-2 opacity-60" />
+                      ZIP Archive
+                    </Button>
                   </PopoverContent>
                 </Popover>
               ) : (
-                <Button onClick={handleExport} size="sm">
-                  <Download className="h-4 w-4 mr-2" />
-                  Export
+                <Button onClick={handleExport} size="sm" className="h-8 px-2 sm:px-3">
+                  <Download className="h-4 w-4" />
+                  <span className="ml-1.5 hidden sm:inline">Export</span>
                 </Button>
               )}
             </div>

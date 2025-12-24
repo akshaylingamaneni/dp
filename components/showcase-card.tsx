@@ -110,18 +110,18 @@ export function ShowcaseCard({ item, isActive, dragOffset, index, currentIndex, 
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.3, delay: 0.2 }}
             >
-              <div className="rounded-2xl border border-white/10 bg-black/50 px-8 py-6 backdrop-blur-xl">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 mx-auto mb-4">
-                  <ImageIcon className="h-6 w-6 text-white/70" />
+              <div className="rounded-xl sm:rounded-2xl border border-white/10 bg-black/50 px-4 py-3 sm:px-6 sm:py-4 md:px-8 md:py-5 backdrop-blur-xl">
+                <div className="flex h-6 w-6 sm:h-8 sm:w-8 md:h-9 md:w-9 items-center justify-center rounded-full bg-white/10 mx-auto mb-2 sm:mb-3">
+                  <ImageIcon className="h-3.5 w-3.5 sm:h-4 sm:w-4 md:h-5 md:w-5 text-white/70" />
                 </div>
-                <div className="space-y-1.5 mb-4 text-center">
-                  <h2 className="text-lg font-medium text-white">Drop your screenshot</h2>
-                  <p className="text-xs text-white/50">or click to browse</p>
+                <div className="space-y-0.5 sm:space-y-1 mb-2 sm:mb-3 text-center">
+                  <h2 className="text-xs sm:text-sm md:text-base font-medium text-white">Drop your screenshot</h2>
+                  <p className="text-[10px] sm:text-xs text-white/50">or click to browse</p>
                 </div>
                 <label htmlFor="image-upload-card">
-                  <Button variant="secondary" className="bg-white/10 hover:bg-white/20 text-white border-white/10 w-full" asChild>
+                  <Button variant="secondary" size="sm" className="bg-white/10 hover:bg-white/20 text-white border-white/10 w-full text-xs sm:text-sm h-7 sm:h-8 md:h-9" asChild>
                     <span className="cursor-pointer">
-                      <Upload className="mr-2 h-4 w-4" />
+                      <Upload className="mr-1.5 h-3 w-3 sm:h-3.5 sm:w-3.5" />
                       Choose Image
                     </span>
                   </Button>

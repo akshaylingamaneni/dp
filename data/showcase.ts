@@ -3,8 +3,8 @@ import type { ShowcaseItem } from "@/types/showcase"
 export const showcaseItems: ShowcaseItem[] = [
   {
     id: 1,
-    title: "Make screenshots ready",
-    description: "Turn raw captures into clean images",
+    title: "Beautiful screenshots",
+    description: "Turn raw captures into beautiful screenshot with clean backgrounds",
     image: "https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=800&q=80",
   },
   {

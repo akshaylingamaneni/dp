@@ -520,14 +520,14 @@ export default function AppLayout({
       }}
     >
       <div className="min-h-screen bg-background flex flex-col">
-        <header className="border-b border-border px-4 py-3 sm:px-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex items-center gap-2">
-            <svg className="h-5 w-5 text-foreground" viewBox="0 0 76 65" fill="currentColor">
-              <path d="M37.5274 0L75.0548 65H0L37.5274 0Z" />
-            </svg>
-            <span className="text-sm font-medium text-foreground">Screenshot</span>
-          </div>
-          {showCanvas && (
+        {showCanvas && (
+          <header className="border-b border-border px-4 py-3 sm:px-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-center gap-2">
+              <svg className="h-5 w-5 text-foreground" viewBox="0 0 76 65" fill="currentColor">
+                <path d="M37.5274 0L75.0548 65H0L37.5274 0Z" />
+              </svg>
+              <span className="text-sm font-medium text-foreground">Screenshot</span>
+            </div>
             <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto sm:justify-end">
               <Button
                 variant="ghost"
@@ -586,8 +586,8 @@ export default function AppLayout({
                 </Button>
               )}
             </div>
-          )}
-        </header>
+          </header>
+        )}
 
         <div className="flex-1 flex flex-col min-h-0">
           {images.length > 0 && (
@@ -600,7 +600,7 @@ export default function AppLayout({
             />
           )}
           <main
-            className="flex-1 flex items-center justify-center p-4 sm:p-6 lg:p-8 min-h-0"
+            className="relative flex-1 flex items-center justify-center min-h-0 overflow-hidden"
             onDrop={handleDrop}
             onDragOver={handleDragOver}
           >

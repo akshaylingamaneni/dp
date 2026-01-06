@@ -7,10 +7,13 @@ import posthog from "posthog-js"
 import { ScreenshotCanvas } from "@/components/screenshot-canvas"
 import { useScreenshotShell } from "@/components/screenshot-shell-context"
 import { ShowcaseSlider } from "@/components/showcase-slider"
+import { TextEditor } from "@/components/text-editor"
+import { DEFAULT_TEXT_THEME_ID } from "@/lib/text-themes"
 
 export default function Home() {
   const {
     image,
+    activeItem,
     padding,
     cornerRadius,
     shadow,
@@ -24,13 +27,17 @@ export default function Home() {
     showBackgroundOnly,
     showCanvas,
     handleImageUpload,
+    handleCreateTextItem,
+    handleTextUpdate,
     handleCanvasReady,
   } = useScreenshotShell()
+
+  const isTextItem = activeItem?.type === "text"
 
   if (!showCanvas) {
     return (
       <section className="absolute inset-0 overflow-hidden" aria-label="Screenshot Composer landing">
-        <ShowcaseSlider showUploadOverlay onImageUpload={handleImageUpload} />
+        <ShowcaseSlider showUploadOverlay onImageUpload={handleImageUpload} onCreateText={handleCreateTextItem} />
 
         <motion.header
           initial={{ opacity: 0, x: -10 }}
@@ -78,6 +85,47 @@ export default function Home() {
             </ul>
           </div>
         </motion.header>
+      </section>
+    )
+  }
+
+  if (isTextItem) {
+    return (
+      <section
+        className="w-full h-full p-4 sm:p-6 lg:p-8"
+        aria-label="Screenshot editor"
+      >
+        <div className="flex h-full w-full flex-col gap-6 lg:flex-row lg:items-start">
+          <div className="w-full lg:w-[420px] xl:w-[480px] lg:shrink-0">
+            <TextEditor
+              value={activeItem?.text ?? ""}
+              onChange={(value) => handleTextUpdate({ text: value })}
+              language={activeItem?.language ?? "auto"}
+              onLanguageChange={(value) => handleTextUpdate({ language: value })}
+              themeId={activeItem?.themeId ?? DEFAULT_TEXT_THEME_ID}
+              onThemeChange={(value) => handleTextUpdate({ themeId: value })}
+              onPreviewReady={(dataUrl) => handleTextUpdate({ src: dataUrl })}
+              title={activeItem?.name}
+            />
+          </div>
+          <div className="flex flex-1 items-center justify-center min-w-0">
+            <ScreenshotCanvas
+              image={image}
+              padding={padding}
+              cornerRadius={cornerRadius}
+              background={background}
+              format={format}
+              shadow={shadow}
+              shadowSettings={shadowSettings}
+              cornerTexts={cornerTexts}
+              textSettings={textSettings}
+              canvasSize={canvasSize}
+              baseColor={baseColor}
+              showBackgroundOnly={showBackgroundOnly}
+              onCanvasReady={handleCanvasReady}
+            />
+          </div>
+        </div>
       </section>
     )
   }

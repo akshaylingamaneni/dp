@@ -13,9 +13,10 @@ import { useColorExtraction, useCurrentColors } from "@/hooks/use-color-extracti
 interface ShowcaseSliderProps {
   showUploadOverlay?: boolean
   onImageUpload?: (event: React.ChangeEvent<HTMLInputElement>) => void
+  onCreateText?: () => void
 }
 
-export function ShowcaseSlider({ showUploadOverlay, onImageUpload }: ShowcaseSliderProps) {
+export function ShowcaseSlider({ showUploadOverlay, onImageUpload, onCreateText }: ShowcaseSliderProps) {
   const sliderRef = useRef<HTMLDivElement>(null)
   const [windowWidth, setWindowWidth] = useState(0)
 
@@ -107,6 +108,7 @@ export function ShowcaseSlider({ showUploadOverlay, onImageUpload }: ShowcaseSli
               currentIndex={currentIndex}
               showUploadOverlay={showUploadOverlay}
               onImageUpload={onImageUpload}
+              onCreateText={onCreateText}
             />
           ))}
         </motion.div>

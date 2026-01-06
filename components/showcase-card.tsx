@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion"
 import { useState } from "react"
-import { ImageIcon, Upload } from "lucide-react"
+import { ImageIcon, Type, Upload } from "lucide-react"
 import type { ShowcaseItem } from "@/types/showcase"
 import { Button } from "@/components/ui/button"
 
@@ -14,9 +14,10 @@ interface ShowcaseCardProps {
   currentIndex: number
   showUploadOverlay?: boolean
   onImageUpload?: (event: React.ChangeEvent<HTMLInputElement>) => void
+  onCreateText?: () => void
 }
 
-export function ShowcaseCard({ item, isActive, dragOffset, index, currentIndex, showUploadOverlay, onImageUpload }: ShowcaseCardProps) {
+export function ShowcaseCard({ item, isActive, dragOffset, index, currentIndex, showUploadOverlay, onImageUpload, onCreateText }: ShowcaseCardProps) {
   const [isHovered, setIsHovered] = useState(false)
   const distance = index - currentIndex
   const parallaxOffset = dragOffset * (0.1 * (distance + 1))
@@ -119,15 +120,33 @@ export function ShowcaseCard({ item, isActive, dragOffset, index, currentIndex, 
                   <h2 className="text-xs sm:text-sm md:text-base font-medium text-white">Drop your screenshot</h2>
                   <p className="text-[10px] sm:text-xs text-white/50">or click to browse</p>
                 </div>
-                <label htmlFor="image-upload-card">
-                  <Button variant="secondary" size="sm" className="bg-white/10 hover:bg-white/20 text-white border-white/10 w-full text-xs sm:text-sm h-7 sm:h-8 md:h-9" asChild>
-                    <span className="cursor-pointer">
-                      <Upload className="mr-1.5 h-3 w-3 sm:h-3.5 sm:w-3.5" />
-                      Choose Image
-                    </span>
+                <div className="flex flex-col gap-2">
+                  <label htmlFor="image-upload-card">
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      className="bg-white/10 hover:bg-white/20 text-white border-white/10 w-full text-xs sm:text-sm h-7 sm:h-8 md:h-9"
+                      asChild
+                    >
+                      <span className="cursor-pointer">
+                        <Upload className="mr-1.5 h-3 w-3 sm:h-3.5 sm:w-3.5" />
+                        Choose Image
+                      </span>
+                    </Button>
+                  </label>
+                  <input id="image-upload-card" type="file" accept="image/*" multiple onChange={onImageUpload} className="hidden" />
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    className="bg-white/10 hover:bg-white/20 text-white border-white/10 w-full text-xs sm:text-sm h-7 sm:h-8 md:h-9"
+                    onClick={onCreateText}
+                    disabled={!onCreateText}
+                    type="button"
+                  >
+                    <Type className="mr-1.5 h-3 w-3 sm:h-3.5 sm:w-3.5" />
+                    Create Text
                   </Button>
-                </label>
-                <input id="image-upload-card" type="file" accept="image/*" multiple onChange={onImageUpload} className="hidden" />
+                </div>
               </div>
             </motion.div>
           )}

@@ -387,7 +387,7 @@ export default function AppLayout({
     const newItem: ImageItem = {
       id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       src: "",
-      name: `text-${images.length + 1}`,
+      name: "Untitled",
       type: "text",
       text: DEFAULT_TEXT_SNIPPET,
       language: "typescript",

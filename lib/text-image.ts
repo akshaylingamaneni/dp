@@ -4,7 +4,7 @@ const imageFilter = (node: HTMLElement) => node.tagName !== "TEXTAREA" && !node.
 
 const defaultOptions = {
   filter: imageFilter,
-  pixelRatio: 2,
+  pixelRatio: 4,
   skipAutoScale: true,
 }
 

@@ -1,9 +1,8 @@
 "use client"
 
 import type React from "react"
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import type { Highlighter } from "shiki"
-import { TextCard } from "@/components/text-card"
 import { TEXT_LANGUAGES, resolveTextLanguageId } from "@/lib/text-languages"
 import { ensureTextTheme, getTextHighlighter } from "@/lib/text-highlighter"
 import { DEFAULT_TEXT_THEME_ID, TEXT_THEMES, getFallbackTextTheme, resolveTextTheme } from "@/lib/text-themes"
@@ -24,6 +23,7 @@ interface TextEditorProps {
   onThemeChange: (value: string) => void
   onPreviewReady: (dataUrl: string) => void
   title?: string
+  onTitleChange?: (value: string) => void
 }
 
 export function TextEditor({
@@ -35,12 +35,41 @@ export function TextEditor({
   onThemeChange,
   onPreviewReady,
   title,
+  onTitleChange,
 }: TextEditorProps) {
+  const [localValue, setLocalValue] = useState(value)
   const [highlighter, setHighlighter] = useState<Highlighter | null>(null)
   const [highlightedHtml, setHighlightedHtml] = useState("")
   const [theme, setTheme] = useState(() => getFallbackTextTheme(themeId))
   const cardRef = useRef<HTMLDivElement>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
+  const timeoutRef = useRef<NodeJS.Timeout>(null)
+
+  // Sync local value when prop changes (for external updates like switching items)
+  useEffect(() => {
+    setLocalValue(value)
+  }, [value])
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current)
+      }
+    }
+  }, [])
+
+  const handleTextChange = (text: string) => {
+    setLocalValue(text)
+
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current)
+    }
+
+    timeoutRef.current = setTimeout(() => {
+      onChange(text)
+    }, 0)
+  }
 
   // Memoize resolved language to avoid unnecessary recalculations
   const resolvedLanguage = language === "auto" ? "plaintext" : language
@@ -55,7 +84,9 @@ export function TextEditor({
         if (mounted) setHighlighter(state.highlighter)
       })
       .catch((err) => console.error("Failed to init highlighter", err))
-    return () => { mounted = false }
+    return () => {
+      mounted = false
+    }
   }, [])
 
   // Resolve theme colors
@@ -66,13 +97,15 @@ export function TextEditor({
         if (mounted) setTheme(resolved)
       })
       .catch((err) => console.warn("Failed to resolve theme", err))
-    return () => { mounted = false }
+    return () => {
+      mounted = false
+    }
   }, [themeId])
 
   // Handle Syntax Highlighting
   useEffect(() => {
     if (!highlighter || !languageId) {
-      setHighlightedHtml(`<pre class="shiki"><code>${escapeHtml(value || " ")}</code></pre>`)
+      setHighlightedHtml(`<pre class="shiki"><code>${escapeHtml(localValue || " ")}</code></pre>`)
       return
     }
 
@@ -81,7 +114,7 @@ export function TextEditor({
     const highlight = async () => {
       try {
         await ensureTextTheme(themeId)
-        const html = highlighter.codeToHtml(value || " ", {
+        const html = highlighter.codeToHtml(localValue || " ", {
           lang: languageId,
           theme: themeId, // shiki uses the ID we registered
         })
@@ -89,15 +122,17 @@ export function TextEditor({
       } catch (error) {
         console.warn("Highlighting failed", error)
         if (mounted) {
-          setHighlightedHtml(`<pre class="shiki"><code>${escapeHtml(value || " ")}</code></pre>`)
+          setHighlightedHtml(`<pre class="shiki"><code>${escapeHtml(localValue || " ")}</code></pre>`)
         }
       }
     }
 
     highlight()
 
-    return () => { mounted = false }
-  }, [value, languageId, highlighter, themeId])
+    return () => {
+      mounted = false
+    }
+  }, [localValue, languageId, highlighter, themeId])
 
   // Handle Preview Generation
   useEffect(() => {
@@ -116,7 +151,7 @@ export function TextEditor({
     }, 500)
 
     return () => clearTimeout(timer)
-  }, [highlightedHtml, theme.id, onPreviewReady])
+  }, [highlightedHtml, theme.id, onPreviewReady, title]) // Added title dependency to re-generate preview when title changes
 
   // Simple indent handler
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -130,12 +165,12 @@ export function TextEditor({
       const val = target.value
 
       const newVal = val.substring(0, start) + "  " + val.substring(end)
-      onChange(newVal)
+      handleTextChange(newVal)
 
       // Need to defer cursor update to next tick effectively
-      setTimeout(() => {
+      requestAnimationFrame(() => {
         target.selectionStart = target.selectionEnd = start + 2
-      }, 0)
+      })
     }
   }
 
@@ -175,11 +210,35 @@ export function TextEditor({
       </div>
 
       <div
-        className={cn("rounded-lg border border-border/60 overflow-hidden", theme.isDark ? "text-slate-100" : "text-slate-900")}
+        ref={cardRef}
+        className={cn("border border-border/60 overflow-hidden", theme.isDark ? "text-slate-100" : "text-slate-900")}
         style={{ background: theme.background }}
       >
-        <div className="border-b border-border/60 px-3 py-2 text-xs opacity-70" style={{ background: theme.header }}>
-          {title ?? "snippet"} · {resolvedLanguageLabel}
+        <div
+          className="relative flex items-center justify-between px-4 py-2 text-xs"
+          style={{ background: theme.header, color: theme.text }}
+        >
+          <div className="flex items-center gap-2">
+            <span className="h-2.5 w-2.5 rounded-full bg-red-400" />
+            <span className="h-2.5 w-2.5 rounded-full bg-amber-400" />
+            <span className="h-2.5 w-2.5 rounded-full bg-emerald-400" />
+          </div>
+
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <input
+              type="text"
+              value={title ?? ""}
+              onChange={(e) => onTitleChange?.(e.target.value)}
+              className="bg-transparent text-center font-medium uppercase tracking-wide opacity-70 focus:outline-none focus:opacity-100 pointer-events-auto w-1/3 min-w-[100px]"
+              style={{ color: "inherit" }}
+              placeholder="Untitled"
+              spellCheck={false}
+            />
+          </div>
+
+          <div className="flex items-center gap-2 text-[11px] font-medium opacity-70 z-10">
+            <span className="opacity-60">{resolvedLanguageLabel}</span>
+          </div>
         </div>
 
         <div className={styles.editorContainer} style={{ "--editor-bg": theme.background, "--editor-text": theme.text } as React.CSSProperties}>
@@ -194,8 +253,8 @@ export function TextEditor({
           <textarea
             ref={textareaRef}
             className={styles.textareaLayer}
-            value={value}
-            onChange={(e) => onChange(e.target.value)}
+            value={localValue}
+            onChange={(e) => handleTextChange(e.target.value)}
             onKeyDown={handleKeyDown}
             spellCheck={false}
             autoCapitalize="off"
@@ -204,17 +263,6 @@ export function TextEditor({
             style={{ caretColor: theme.text }}
           />
         </div>
-      </div>
-
-      {/* Hidden Card for Image Generation */}
-      <div className="fixed left-[-9999px] top-[-9999px] pointer-events-none" aria-hidden="true">
-        <TextCard
-          ref={cardRef}
-          highlightedHtml={highlightedHtml}
-          theme={theme}
-          title={title}
-          languageLabel={resolvedLanguageLabel}
-        />
       </div>
     </div>
   )

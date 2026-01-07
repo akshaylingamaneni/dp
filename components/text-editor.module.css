@@ -38,14 +38,14 @@
 
 .highlightLayer code,
 .highlightLayer pre {
-  font-family: inherit !important;
-  font-size: inherit !important;
-  line-height: inherit !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  background: transparent !important;
-  white-space: pre-wrap !important;
-  word-break: break-all !important;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  margin: 0;
+  padding: 0;
+  background: transparent !important; /* Override inline styles from shiki */
+  white-space: pre-wrap;
+  word-break: break-all;
 }
 
 .textareaLayer {

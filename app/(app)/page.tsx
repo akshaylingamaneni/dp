@@ -106,6 +106,7 @@ export default function Home() {
               onThemeChange={(value) => handleTextUpdate({ themeId: value })}
               onPreviewReady={(dataUrl) => handleTextUpdate({ src: dataUrl })}
               title={activeItem?.name}
+              onTitleChange={(value) => handleTextUpdate({ name: value })}
             />
           </div>
           <div className="flex flex-1 items-center justify-center min-w-0">

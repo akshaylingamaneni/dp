@@ -3,105 +3,17 @@
 import type React from "react"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import type { Highlighter } from "shiki"
-import hljs from "highlight.js"
 import { TextCard } from "@/components/text-card"
 import { TEXT_LANGUAGES, resolveTextLanguageId } from "@/lib/text-languages"
-import { getTextHighlighter } from "@/lib/text-highlighter"
-import { DEFAULT_TEXT_THEME_ID, TEXT_THEMES } from "@/lib/text-themes"
+import { ensureTextTheme, getTextHighlighter } from "@/lib/text-highlighter"
+import { DEFAULT_TEXT_THEME_ID, TEXT_THEMES, getFallbackTextTheme, resolveTextTheme } from "@/lib/text-themes"
 import { nodeToPng } from "@/lib/text-image"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { cn } from "@/lib/utils"
 import styles from "./text-editor.module.css"
 
-const FALLBACK_LANGUAGE = "plaintext"
-
 const escapeHtml = (code: string) =>
   code.replace(/[\u00A0-\u9999<>\&]/g, (value) => `&#${value.charCodeAt(0)};`)
-
-function indentText(text: string) {
-  return text
-    .split("\n")
-    .map((str) => `  ${str}`)
-    .join("\n")
-}
-
-function dedentText(text: string) {
-  return text
-    .split("\n")
-    .map((str) => str.replace(/^\s\s/, ""))
-    .join("\n")
-}
-
-function getCurrentlySelectedLine(textarea: HTMLTextAreaElement) {
-  const original = textarea.value
-  const selectionStart = textarea.selectionStart
-  const beforeStart = original.slice(0, selectionStart)
-
-  return original.slice(beforeStart.lastIndexOf("\n") != -1 ? beforeStart.lastIndexOf("\n") + 1 : 0).split("\n")[0]
-}
-
-function handleTab(textarea: HTMLTextAreaElement, shiftKey: boolean) {
-  const original = textarea.value
-
-  const start = textarea.selectionStart
-  const end = textarea.selectionEnd
-
-  const beforeStart = original.slice(0, start)
-
-  const currentLine = getCurrentlySelectedLine(textarea)
-
-  if (start === end) {
-    if (shiftKey) {
-      const newStart = beforeStart.lastIndexOf("\n") + 1
-      textarea.setSelectionRange(newStart, end)
-      document.execCommand("insertText", false, dedentText(original.slice(newStart, end)))
-    } else {
-      document.execCommand("insertText", false, "  ")
-    }
-  } else {
-    const newStart = beforeStart.lastIndexOf("\n") + 1 || 0
-    textarea.setSelectionRange(newStart, end)
-
-    if (shiftKey) {
-      const newText = dedentText(original.slice(newStart, end))
-      document.execCommand("insertText", false, newText)
-
-      if (currentLine.startsWith("  ")) {
-        textarea.setSelectionRange(start - 2, start - 2 + newText.length)
-      } else {
-        textarea.setSelectionRange(start, start + newText.length)
-      }
-    } else {
-      const newText = indentText(original.slice(newStart, end))
-      document.execCommand("insertText", false, newText)
-      textarea.setSelectionRange(start + 2, start + 2 + newText.length)
-    }
-  }
-}
-
-function handleEnter(textarea: HTMLTextAreaElement) {
-  const currentLine = getCurrentlySelectedLine(textarea)
-
-  const currentIndentationMatch = currentLine.match(/^(\s+)/)
-  let wantedIndentation = currentIndentationMatch ? currentIndentationMatch[0] : ""
-
-  if (currentLine.match(/([\{\[:>])$/)) {
-    wantedIndentation += "  "
-  }
-
-  document.execCommand("insertText", false, `\n${wantedIndentation}`)
-}
-
-function handleBracketClose(textarea: HTMLTextAreaElement) {
-  const currentLine = getCurrentlySelectedLine(textarea)
-  const { selectionStart, selectionEnd } = textarea
-
-  if (selectionStart === selectionEnd && currentLine.match(/^\s{2,}$/)) {
-    textarea.setSelectionRange(selectionStart - 2, selectionEnd)
-  }
-
-  document.execCommand("insertText", false, "}")
-}
 
 interface TextEditorProps {
   value: string
@@ -125,127 +37,107 @@ export function TextEditor({
   title,
 }: TextEditorProps) {
   const [highlighter, setHighlighter] = useState<Highlighter | null>(null)
-  const [usesBundled, setUsesBundled] = useState(false)
-  const textareaRef = useRef<HTMLTextAreaElement>(null)
   const [highlightedHtml, setHighlightedHtml] = useState("")
-  const [highlightedSource, setHighlightedSource] = useState("")
+  const [theme, setTheme] = useState(() => getFallbackTextTheme(themeId))
   const cardRef = useRef<HTMLDivElement>(null)
-  const bundledLangRef = useRef<Set<string>>(new Set())
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
 
-  const theme = useMemo(() => TEXT_THEMES.find((item) => item.id === themeId) ?? TEXT_THEMES[0], [themeId])
-  const fallbackHtml = useMemo(() => buildPlainHtml(value, theme.text), [value, theme.text])
-  const resolvedLanguage = useMemo(
-    () => (language === "auto" ? detectLanguage(value) : language),
-    [language, value],
-  )
-  const languageKey = TEXT_LANGUAGES[resolvedLanguage] ? resolvedLanguage : FALLBACK_LANGUAGE
-  const displayHtml = highlightedSource === value ? highlightedHtml : fallbackHtml
+  // Memoize resolved language to avoid unnecessary recalculations
+  const resolvedLanguage = language === "auto" ? "plaintext" : language
+  const languageConfig = TEXT_LANGUAGES[resolvedLanguage]
+  const languageId = resolveTextLanguageId(resolvedLanguage, languageConfig?.name ?? "plaintext")
 
-  const handleKeyDown = useCallback<React.KeyboardEventHandler<HTMLTextAreaElement>>((event) => {
-    const textarea = textareaRef.current
-    if (!textarea) return
-    switch (event.key) {
-      case "Tab":
-        event.preventDefault()
-        handleTab(textarea, event.shiftKey)
-        break
-      case "}":
-        event.preventDefault()
-        handleBracketClose(textarea)
-        break
-      case "Enter":
-        event.preventDefault()
-        handleEnter(textarea)
-        break
-      case "Escape":
-        event.preventDefault()
-        textarea.blur()
-        break
-    }
-  }, [])
-
+  // Initialize highlighter
   useEffect(() => {
     let mounted = true
-
     getTextHighlighter()
       .then((state) => {
-        if (!mounted) return
-        setHighlighter(state.highlighter)
-        setUsesBundled(state.usesBundled)
-        bundledLangRef.current = state.bundledLangs
+        if (mounted) setHighlighter(state.highlighter)
       })
-      .catch((error) => {
-        console.error("Failed to initialize highlighter", error)
-      })
-
-    return () => {
-      mounted = false
-    }
+      .catch((err) => console.error("Failed to init highlighter", err))
+    return () => { mounted = false }
   }, [])
 
+  // Resolve theme colors
   useEffect(() => {
-    const selectedLanguage = TEXT_LANGUAGES[languageKey]
+    let mounted = true
+    resolveTextTheme(themeId)
+      .then((resolved) => {
+        if (mounted) setTheme(resolved)
+      })
+      .catch((err) => console.warn("Failed to resolve theme", err))
+    return () => { mounted = false }
+  }, [themeId])
 
-    if (!highlighter || languageKey === FALLBACK_LANGUAGE) {
-      setHighlightedHtml(fallbackHtml)
-      setHighlightedSource(value)
+  // Handle Syntax Highlighting
+  useEffect(() => {
+    if (!highlighter || !languageId) {
+      setHighlightedHtml(`<pre class="shiki"><code>${escapeHtml(value || " ")}</code></pre>`)
       return
     }
 
-    const langId = resolveTextLanguageId(languageKey, selectedLanguage.name)
-    if (usesBundled && !bundledLangRef.current.has(langId)) {
-      setHighlightedHtml(fallbackHtml)
-      setHighlightedSource(value)
-      return
-    }
+    let mounted = true
 
-    const loadLanguage = async () => {
-      if (!usesBundled && selectedLanguage?.src) {
-        const highlighterAny = highlighter as any
-        const loaded = highlighterAny.getLoadedLanguages?.() ?? []
-        if (!loaded.includes(langId)) {
-          await highlighterAny.loadLanguage?.(selectedLanguage.src())
+    const highlight = async () => {
+      try {
+        await ensureTextTheme(themeId)
+        const html = highlighter.codeToHtml(value || " ", {
+          lang: languageId,
+          theme: themeId, // shiki uses the ID we registered
+        })
+        if (mounted) setHighlightedHtml(html)
+      } catch (error) {
+        console.warn("Highlighting failed", error)
+        if (mounted) {
+          setHighlightedHtml(`<pre class="shiki"><code>${escapeHtml(value || " ")}</code></pre>`)
         }
       }
-
-      const html = highlighter.codeToHtml(value || " ", {
-        lang: langId,
-        theme: theme.id,
-      })
-      setHighlightedHtml(html)
-      setHighlightedSource(value)
     }
 
-    loadLanguage().catch(() => {
-      setHighlightedHtml(fallbackHtml)
-      setHighlightedSource(value)
-    })
-  }, [value, languageKey, highlighter, theme.id, usesBundled, fallbackHtml])
+    highlight()
 
+    return () => { mounted = false }
+  }, [value, languageId, highlighter, themeId])
+
+  // Handle Preview Generation
   useEffect(() => {
     if (!cardRef.current) return
 
-    let active = true
-    const timeout = setTimeout(async () => {
-      if (!cardRef.current || !displayHtml) return
+    // Debounce preview generation
+    const timer = setTimeout(async () => {
+      if (!cardRef.current) return
       try {
-        if (document.fonts?.ready) {
-          await document.fonts.ready
-        }
+        await document.fonts?.ready
         const dataUrl = await nodeToPng(cardRef.current)
-        if (active) {
-          onPreviewReady(dataUrl)
-        }
-      } catch (error) {
-        console.error("Failed to render text card", error)
+        onPreviewReady(dataUrl)
+      } catch (e) {
+        console.error("Preview generation failed", e)
       }
-    }, 300)
+    }, 500)
 
-    return () => {
-      active = false
-      clearTimeout(timeout)
+    return () => clearTimeout(timer)
+  }, [highlightedHtml, theme.id, onPreviewReady])
+
+  // Simple indent handler
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    e.stopPropagation()
+
+    if (e.key === "Tab") {
+      e.preventDefault()
+      const target = e.currentTarget
+      const start = target.selectionStart
+      const end = target.selectionEnd
+      const val = target.value
+
+      const newVal = val.substring(0, start) + "  " + val.substring(end)
+      onChange(newVal)
+
+      // Need to defer cursor update to next tick effectively
+      setTimeout(() => {
+        target.selectionStart = target.selectionEnd = start + 2
+      }, 0)
     }
-  }, [displayHtml, theme.id, onPreviewReady])
+  }
 
   const resolvedLanguageLabel = TEXT_LANGUAGES[resolvedLanguage]?.name ?? "Plaintext"
 
@@ -257,7 +149,7 @@ export function TextEditor({
             <SelectTrigger className="h-8 w-[150px] text-xs">
               <SelectValue placeholder="Language" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="max-h-[250px]" position="popper">
               <SelectItem value="auto">Auto</SelectItem>
               {Object.entries(TEXT_LANGUAGES).map(([key, lang]) => (
                 <SelectItem key={key} value={key}>
@@ -270,7 +162,7 @@ export function TextEditor({
             <SelectTrigger className="h-8 w-[160px] text-xs">
               <SelectValue placeholder="Theme" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="max-h-[250px]" position="popper">
               {TEXT_THEMES.map((item) => (
                 <SelectItem key={item.id} value={item.id}>
                   {item.name}
@@ -283,39 +175,42 @@ export function TextEditor({
       </div>
 
       <div
-        className={cn("rounded-lg border border-border/60", theme.isDark ? "text-slate-100" : "text-slate-900")}
+        className={cn("rounded-lg border border-border/60 overflow-hidden", theme.isDark ? "text-slate-100" : "text-slate-900")}
         style={{ background: theme.background }}
       >
         <div className="border-b border-border/60 px-3 py-2 text-xs opacity-70" style={{ background: theme.header }}>
           {title ?? "snippet"} · {resolvedLanguageLabel}
         </div>
-        <div
-          className={cn(styles.editor, "font-mono")}
-          style={{ color: theme.text, "--editor-padding": "16px" } as React.CSSProperties}
-          data-value={value || " "}
-        >
+
+        <div className={styles.editorContainer} style={{ "--editor-bg": theme.background, "--editor-text": theme.text } as React.CSSProperties}>
+          {/* The Highlighting Layer */}
+          <div
+            className={styles.highlightLayer}
+            dangerouslySetInnerHTML={{ __html: highlightedHtml }}
+            aria-hidden="true"
+          />
+
+          {/* The Editing Layer */}
           <textarea
-            className={styles.textarea}
-            style={{ caretColor: theme.text }}
+            ref={textareaRef}
+            className={styles.textareaLayer}
             value={value}
-            onChange={(event) => onChange(event.target.value)}
+            onChange={(e) => onChange(e.target.value)}
             onKeyDown={handleKeyDown}
             spellCheck={false}
-            aria-label="Text editor"
-            ref={textareaRef}
-          />
-          <div
-            className={cn(styles.formatted, languageKey === FALLBACK_LANGUAGE && styles.plainText)}
-            aria-hidden="true"
-            dangerouslySetInnerHTML={{ __html: displayHtml }}
+            autoCapitalize="off"
+            autoComplete="off"
+            autoCorrect="off"
+            style={{ caretColor: theme.text }}
           />
         </div>
       </div>
 
-      <div className="absolute left-[-9999px] top-[-9999px] pointer-events-none" aria-hidden="true">
+      {/* Hidden Card for Image Generation */}
+      <div className="fixed left-[-9999px] top-[-9999px] pointer-events-none" aria-hidden="true">
         <TextCard
           ref={cardRef}
-          highlightedHtml={displayHtml}
+          highlightedHtml={highlightedHtml}
           theme={theme}
           title={title}
           languageLabel={resolvedLanguageLabel}
@@ -323,15 +218,4 @@ export function TextEditor({
       </div>
     </div>
   )
-}
-
-function detectLanguage(code: string) {
-  const languageKeys = Object.keys(TEXT_LANGUAGES)
-  const result = hljs.highlightAuto(code, languageKeys)
-  return result.language && TEXT_LANGUAGES[result.language] ? result.language : FALLBACK_LANGUAGE
-}
-
-function buildPlainHtml(code: string, textColor?: string) {
-  const colorStyle = textColor ? `color: ${textColor};` : ""
-  return `<pre class=\"shiki\" style=\"background-color: transparent; ${colorStyle}\"><code>${escapeHtml(code || " ")}</code></pre>`
 }

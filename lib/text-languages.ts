@@ -1,6 +1,6 @@
 export type TextLanguage = {
   name: string
-  src: () => Promise<any>
+  src?: () => Promise<any>
 }
 
 export const TEXT_LANGUAGES: { [index: string]: TextLanguage } = {
@@ -146,7 +146,6 @@ export const TEXT_LANGUAGES: { [index: string]: TextLanguage } = {
   },
   plaintext: {
     name: "Plaintext",
-    src: () => import("shiki/langs/javascript.mjs"),
   },
   powershell: {
     name: "Powershell",
@@ -243,6 +242,21 @@ export const TEXT_LANGUAGES: { [index: string]: TextLanguage } = {
 }
 
 export const TEXT_LANGUAGE_KEYS = Object.keys(TEXT_LANGUAGES)
+
+export const CORE_TEXT_LANGUAGE_KEYS = [
+  "plaintext",
+  "markdown",
+  "typescript",
+  "tsx",
+  "javascript",
+  "python",
+  "java",
+  "go",
+  "json",
+  "html",
+  "css",
+  "yaml",
+] as const
 
 export function resolveTextLanguageId(key: string, name: string) {
   if (key === "shell") return "bash"

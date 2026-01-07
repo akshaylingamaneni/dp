@@ -1,58 +1,66 @@
-.editor {
+/* Grid Stack Approach: The container is a grid, and both layers occupy the same cell */
+.editorContainer {
   display: grid;
+  grid-template-columns: 100%;
+  position: relative;
   width: 100%;
   min-height: 200px;
-  grid-template: auto / 1fr;
-  --editor-padding: 16px;
-}
-
-.editor:after {
-  content: attr(data-value) " ";
-  visibility: hidden;
-  pointer-events: none;
-}
-
-.editor:after,
-.textarea,
-.formatted {
-  padding: var(--editor-padding);
-  margin: 0;
+  max-height: 600px; /* Prevent infinite growth */
+  overflow: auto; /* Allow scrolling if it gets too tall */
   font-family: inherit;
-  font-size: 15px;
-  font-variant-ligatures: none;
-  letter-spacing: 0.1px;
-  line-height: 22.5px;
-  grid-area: 1 / 1 / 2 / 2;
+  line-height: 1.5;
+  font-size: 14px;
+}
+
+/* Shared typography styles */
+.highlightLayer, 
+.textareaLayer {
+  grid-area: 1 / 1 / 2 / 2; /* Stack on top of each other */
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
   white-space: pre-wrap;
+  word-break: break-all;
+  padding: 1rem;
+  margin: 0;
+  border: 0;
+  width: 100%;
+  box-sizing: border-box;
   tab-size: 2;
 }
 
-.textarea {
-  z-index: 2;
-  border: none;
-  resize: none;
-  overflow: hidden;
-  min-height: min-content;
+.highlightLayer {
+  position: relative; /* It participates in the grid flow, establishing height */
+  pointer-events: none;
+  color: var(--editor-text);
+  z-index: 0;
+}
+
+.highlightLayer code,
+.highlightLayer pre {
+  font-family: inherit !important;
+  font-size: inherit !important;
+  line-height: inherit !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  white-space: pre-wrap !important;
+  word-break: break-all !important;
+}
+
+.textareaLayer {
+  position: relative; /* Also stack */
+  z-index: 1;
   background: transparent;
   color: transparent;
-  caret-color: currentColor;
-  -webkit-text-fill-color: transparent;
-  text-size-adjust: none;
+  caret-color: var(--editor-text);
+  resize: none; /* Auto-growth handles this */
   outline: none;
+  overflow: hidden; /* No scrollbars on textarea itself */
+  height: 100%; /* Match height of container (which matches highlightLayer) */
 }
 
-.formatted > pre {
-  margin: 0;
-  background: transparent !important;
-  padding: 0 !important;
-  font-family: inherit;
-  white-space: pre-wrap;
-}
-
-.formatted > pre > code {
-  font-family: inherit;
-}
-
-.plainText {
-  color: inherit;
+.textareaLayer::selection {
+  background-color: rgba(59, 130, 246, 0.3);
+  color: transparent;
 }

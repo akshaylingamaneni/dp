@@ -19,7 +19,7 @@ export const TextCard = forwardRef<HTMLDivElement, TextCardProps>(function TextC
   return (
     <div ref={ref} className={styles.card}>
       <div
-        className="overflow-hidden rounded-2xl border border-black/10 shadow-2xl"
+        className="overflow-hidden"
         style={{ background: theme.background, color: theme.text }}
       >
         <div

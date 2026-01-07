@@ -390,7 +390,7 @@ export default function AppLayout({
       name: `text-${images.length + 1}`,
       type: "text",
       text: DEFAULT_TEXT_SNIPPET,
-      language: "auto",
+      language: "typescript",
       themeId: DEFAULT_TEXT_THEME_ID,
     }
     posthog.capture("text_item_created", {

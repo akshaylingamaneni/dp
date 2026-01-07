@@ -15,9 +15,10 @@ interface ShowcaseCardProps {
   showUploadOverlay?: boolean
   onImageUpload?: (event: React.ChangeEvent<HTMLInputElement>) => void
   onCreateText?: () => void
+  priority?: boolean
 }
 
-export function ShowcaseCard({ item, isActive, dragOffset, index, currentIndex, showUploadOverlay, onImageUpload, onCreateText }: ShowcaseCardProps) {
+export function ShowcaseCard({ item, isActive, dragOffset, index, currentIndex, showUploadOverlay, onImageUpload, onCreateText, priority = false }: ShowcaseCardProps) {
   const [isHovered, setIsHovered] = useState(false)
   const distance = index - currentIndex
   const parallaxOffset = dragOffset * (0.1 * (distance + 1))
@@ -27,16 +28,19 @@ export function ShowcaseCard({ item, isActive, dragOffset, index, currentIndex, 
   const translateZ = Math.abs(clampedDistance) * -150
   const translateX = clampedDistance * 60
 
+  const animateState = {
+    scale: isActive ? 1 : 0.75,
+    opacity: isActive ? 1 : 0.6,
+    rotateY,
+    z: translateZ,
+    x: translateX + parallaxOffset,
+  }
+
   return (
     <motion.div
       className="relative flex-shrink-0"
-      animate={{
-        scale: isActive ? 1 : 0.75,
-        opacity: isActive ? 1 : 0.6,
-        rotateY,
-        z: translateZ,
-        x: translateX + parallaxOffset,
-      }}
+      initial={animateState}
+      animate={animateState}
       transition={{ duration: 0.5, ease: [0.32, 0.72, 0, 1] }}
       style={{ transformStyle: "preserve-3d" }}
       onMouseEnter={() => setIsHovered(true)}
@@ -63,7 +67,7 @@ export function ShowcaseCard({ item, isActive, dragOffset, index, currentIndex, 
             transition={{ duration: 0.4, ease: "easeOut" }}
             crossOrigin="anonymous"
             draggable={false}
-            loading="lazy"
+            loading={priority ? "eager" : "lazy"}
           />
 
           <motion.div

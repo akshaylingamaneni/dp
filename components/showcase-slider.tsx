@@ -18,13 +18,20 @@ interface ShowcaseSliderProps {
 
 export function ShowcaseSlider({ showUploadOverlay, onImageUpload, onCreateText }: ShowcaseSliderProps) {
   const sliderRef = useRef<HTMLDivElement>(null)
-  const [windowWidth, setWindowWidth] = useState(0)
+
+  const [slideWidth, setSlideWidth] = useState(0)
 
   useEffect(() => {
-    setWindowWidth(window.innerWidth)
-    const handleResize = () => setWindowWidth(window.innerWidth)
-    window.addEventListener("resize", handleResize)
-    return () => window.removeEventListener("resize", handleResize)
+    const updateDimensions = () => {
+      const width = window.innerWidth
+      const cardW = width > 768 ? 440 : width > 640 ? 380 : 320
+      const gapW = width > 768 ? 96 : width > 640 ? 64 : 48
+      setSlideWidth(cardW + gapW)
+    }
+
+    updateDimensions()
+    window.addEventListener("resize", updateDimensions)
+    return () => window.removeEventListener("resize", updateDimensions)
   }, [])
 
   const { currentIndex, goToNext, goToPrev, goToSlide } = useSliderNavigation({
@@ -45,10 +52,6 @@ export function ShowcaseSlider({ showUploadOverlay, onImageUpload, onCreateText 
 
   const colors = useColorExtraction(showcaseItems)
   const currentColors = useCurrentColors(colors, showcaseItems[currentIndex]?.id)
-
-  const cardWidth = windowWidth > 768 ? 440 : windowWidth > 640 ? 380 : 320
-  const gap = windowWidth > 768 ? 96 : windowWidth > 640 ? 64 : 48
-  const slideWidth = cardWidth + gap
 
   return (
     <div className="relative h-full w-full">
@@ -86,12 +89,9 @@ export function ShowcaseSlider({ showUploadOverlay, onImageUpload, onCreateText 
         onTouchEnd={handleDragEnd}
       >
         <motion.div
-          className="flex items-center"
+          className="flex items-center gap-[48px] px-[calc(50vw-160px)] sm:gap-[64px] sm:px-[calc(50vw-190px)] md:gap-[96px] md:px-[calc(50vw-220px)]"
           style={{
             transformStyle: "preserve-3d",
-            gap: `${gap}px`,
-            paddingLeft: `calc(50vw - ${cardWidth / 2}px)`,
-            paddingRight: `calc(50vw - ${cardWidth / 2}px)`,
           }}
           animate={{
             x: -currentIndex * slideWidth + dragX,
@@ -109,6 +109,7 @@ export function ShowcaseSlider({ showUploadOverlay, onImageUpload, onCreateText 
               showUploadOverlay={showUploadOverlay}
               onImageUpload={onImageUpload}
               onCreateText={onCreateText}
+              priority={index < 2}
             />
           ))}
         </motion.div>

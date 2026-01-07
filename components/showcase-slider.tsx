@@ -9,14 +9,16 @@ import { useSliderNavigation } from "@/hooks/use-slider-navigation"
 import { useSliderDrag } from "@/hooks/use-slider-drag"
 import { useSliderWheel } from "@/hooks/use-slider-wheel"
 import { useColorExtraction, useCurrentColors } from "@/hooks/use-color-extraction"
+import { gridPatterns } from "@/lib/patterns"
 
 interface ShowcaseSliderProps {
   showUploadOverlay?: boolean
   onImageUpload?: (event: React.ChangeEvent<HTMLInputElement>) => void
   onCreateText?: () => void
+  selectedBackground?: string
 }
 
-export function ShowcaseSlider({ showUploadOverlay, onImageUpload, onCreateText }: ShowcaseSliderProps) {
+export function ShowcaseSlider({ showUploadOverlay, onImageUpload, onCreateText, selectedBackground }: ShowcaseSliderProps) {
   const sliderRef = useRef<HTMLDivElement>(null)
 
   const [slideWidth, setSlideWidth] = useState(0)
@@ -53,28 +55,42 @@ export function ShowcaseSlider({ showUploadOverlay, onImageUpload, onCreateText 
   const colors = useColorExtraction(showcaseItems)
   const currentColors = useCurrentColors(colors, showcaseItems[currentIndex]?.id)
 
+  const activePattern = selectedBackground
+    ? gridPatterns.find(p => p.id === selectedBackground)
+    : null
+
+  const getBackgroundStyle = () => {
+    if (activePattern?.style) {
+      return activePattern.style
+    }
+
+    return {
+      background: `
+        radial-gradient(ellipse at 30% 20%, ${currentColors[0]}66 0%, transparent 50%),
+        radial-gradient(ellipse at 70% 80%, ${currentColors[1]}66 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 50%, ${currentColors[2]}44 0%, transparent 70%),
+        linear-gradient(180deg, #0a0a0a 0%, #111111 100%)
+      `
+    }
+  }
+
+  const handleCardClick = (index: number) => {
+    goToSlide(index)
+  }
+
   return (
     <div className="relative h-full w-full">
       <AnimatePresence mode="wait">
         <motion.div
-          key={currentIndex}
-          initial={{ opacity: 0, scale: 1.1 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.95 }}
-          transition={{ duration: 0.6, ease: [0.32, 0.72, 0, 1] }}
-          className="absolute inset-0"
-          style={{
-            background: `
-              radial-gradient(ellipse at 30% 20%, ${currentColors[0]}66 0%, transparent 50%),
-              radial-gradient(ellipse at 70% 80%, ${currentColors[1]}66 0%, transparent 50%),
-              radial-gradient(ellipse at 50% 50%, ${currentColors[2]}44 0%, transparent 70%),
-              linear-gradient(180deg, #0a0a0a 0%, #111111 100%)
-            `,
-          }}
+          key={selectedBackground || currentIndex}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.6 }}
+          className="absolute inset-0 z-0"
+          style={getBackgroundStyle()}
         />
       </AnimatePresence>
-
-      <div className="absolute inset-0 backdrop-blur-3xl" />
 
       <div
         ref={sliderRef}
@@ -106,6 +122,7 @@ export function ShowcaseSlider({ showUploadOverlay, onImageUpload, onCreateText 
               dragOffset={dragX}
               index={index}
               currentIndex={currentIndex}
+              onClick={() => handleCardClick(index)}
               showUploadOverlay={showUploadOverlay}
               onImageUpload={onImageUpload}
               onCreateText={onCreateText}

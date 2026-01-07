@@ -16,9 +16,10 @@ interface ShowcaseCardProps {
   onImageUpload?: (event: React.ChangeEvent<HTMLInputElement>) => void
   onCreateText?: () => void
   priority?: boolean
+  onClick?: () => void
 }
 
-export function ShowcaseCard({ item, isActive, dragOffset, index, currentIndex, showUploadOverlay, onImageUpload, onCreateText, priority = false }: ShowcaseCardProps) {
+export function ShowcaseCard({ item, isActive, dragOffset, index, currentIndex, showUploadOverlay, onImageUpload, onCreateText, priority = false, onClick }: ShowcaseCardProps) {
   const [isHovered, setIsHovered] = useState(false)
   const distance = index - currentIndex
   const parallaxOffset = dragOffset * (0.1 * (distance + 1))
@@ -45,6 +46,7 @@ export function ShowcaseCard({ item, isActive, dragOffset, index, currentIndex, 
       style={{ transformStyle: "preserve-3d" }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      onClick={onClick}
     >
       <motion.div
         className="group relative overflow-hidden rounded-2xl"

@@ -37,7 +37,12 @@ export default function Home() {
   if (!showCanvas) {
     return (
       <section className="absolute inset-0 overflow-hidden" aria-label="Screenshot Composer landing">
-        <ShowcaseSlider showUploadOverlay onImageUpload={handleImageUpload} onCreateText={handleCreateTextItem} />
+        <ShowcaseSlider
+          showUploadOverlay
+          onImageUpload={handleImageUpload}
+          onCreateText={handleCreateTextItem}
+          selectedBackground={background}
+        />
 
         <motion.header
           initial={{ opacity: 0, x: -10 }}

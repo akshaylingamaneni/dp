@@ -139,7 +139,7 @@ export function ScreenshotCanvas({
     <div className="flex items-center justify-center w-full h-full relative" style={{ height: "100%" }}>
       <canvas
         ref={canvasRef}
-        className="rounded-lg border-4 border-white shadow-2xl"
+        className="rounded-lg border-1  shadow-2xl"
         style={{
           ...canvasStyle,
           boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(0, 0, 0, 0.05)",

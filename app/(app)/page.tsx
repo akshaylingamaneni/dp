@@ -89,13 +89,13 @@ export default function Home() {
     )
   }
 
-  if (isTextItem) {
-    return (
-      <section
-        className="w-full h-full p-4 sm:p-6 lg:p-8"
-        aria-label="Screenshot editor"
-      >
-        <div className="flex h-full w-full flex-col gap-6 lg:flex-row lg:items-start">
+  return (
+    <section
+      className="w-full h-full p-4 sm:p-6 lg:p-8"
+      aria-label="Screenshot editor"
+    >
+      <div className="flex h-full w-full flex-col gap-6 lg:flex-row lg:items-start">
+        {isTextItem && (
           <div className="w-full lg:w-[420px] xl:w-[480px] lg:shrink-0">
             <TextEditor
               value={activeItem?.text ?? ""}
@@ -109,48 +109,25 @@ export default function Home() {
               onTitleChange={(value) => handleTextUpdate({ name: value })}
             />
           </div>
-          <div className="flex flex-1 items-center justify-center min-w-0">
-            <ScreenshotCanvas
-              image={image}
-              padding={padding}
-              cornerRadius={cornerRadius}
-              background={background}
-              format={format}
-              shadow={shadow}
-              shadowSettings={shadowSettings}
-              cornerTexts={cornerTexts}
-              textSettings={textSettings}
-              canvasSize={canvasSize}
-              baseColor={baseColor}
-              showBackgroundOnly={showBackgroundOnly}
-              onCanvasReady={handleCanvasReady}
-            />
-          </div>
+        )}
+        <div className="flex flex-1 items-center justify-center min-w-0 h-full">
+          <ScreenshotCanvas
+            image={image}
+            padding={padding}
+            cornerRadius={cornerRadius}
+            background={background}
+            format={format}
+            shadow={shadow}
+            shadowSettings={shadowSettings}
+            cornerTexts={cornerTexts}
+            textSettings={textSettings}
+            canvasSize={canvasSize}
+            baseColor={baseColor}
+            showBackgroundOnly={showBackgroundOnly}
+            onCanvasReady={handleCanvasReady}
+          />
         </div>
-      </section>
-    )
-  }
-
-  return (
-    <section
-      className="w-full h-full flex items-center justify-center p-4 sm:p-6 lg:p-8"
-      aria-label="Screenshot editor"
-    >
-      <ScreenshotCanvas
-        image={image}
-        padding={padding}
-        cornerRadius={cornerRadius}
-        background={background}
-        format={format}
-        shadow={shadow}
-        shadowSettings={shadowSettings}
-        cornerTexts={cornerTexts}
-        textSettings={textSettings}
-        canvasSize={canvasSize}
-        baseColor={baseColor}
-        showBackgroundOnly={showBackgroundOnly}
-        onCanvasReady={handleCanvasReady}
-      />
+      </div>
     </section>
   )
 }

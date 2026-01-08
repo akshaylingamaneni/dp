@@ -286,6 +286,6 @@ export function TextEditor({
           />
         </div>
       </div>
-    </div >
+    </div>
   )
 }

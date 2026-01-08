@@ -5,7 +5,7 @@ export const showcaseItems: ShowcaseItem[] = [
     id: 1,
     title: "Beautiful screenshots",
     description: "Turn raw captures into beautiful screenshot with clean backgrounds",
-    image: "https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=800&q=80",
+    image: "/0_3.png",
     alt: "Screenshot with beautiful gradient background applied",
   },
   {
@@ -40,7 +40,7 @@ export const showcaseItems: ShowcaseItem[] = [
     id: 6,
     title: "Corner labels",
     description: "Add text with font and opacity settings",
-    image: "/0_3.png",
+image: "https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=800&q=80",
     alt: "Screenshot with corner text labels",
   },
   {

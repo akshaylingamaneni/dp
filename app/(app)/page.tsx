@@ -45,9 +45,6 @@ export default function Home() {
         />
 
         <motion.header
-          initial={{ opacity: 0, x: -10 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5, delay: 0.4 }}
           className="pointer-events-none absolute left-4 top-4 z-20 sm:left-6 sm:top-6 lg:bottom-0 lg:left-10 lg:top-0 lg:flex lg:max-w-sm lg:flex-col lg:justify-center xl:left-14 xl:max-w-md"
         >
           {/* Text Scrim - ensures visibility on light backgrounds */}

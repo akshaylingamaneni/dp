@@ -29,6 +29,8 @@ export function ShowcaseCard({ item, isActive, dragOffset, index, currentIndex, 
   const translateZ = Math.abs(clampedDistance) * -150
   const translateX = clampedDistance * 60
 
+  const shouldSkipEntrance = priority && isActive
+
   const animateState = {
     scale: isActive ? 1 : 0.75,
     opacity: isActive ? 1 : 0.6,
@@ -74,7 +76,7 @@ export function ShowcaseCard({ item, isActive, dragOffset, index, currentIndex, 
 
           <motion.div
             className="absolute inset-x-2 bottom-2 rounded-b-xl bg-gradient-to-t from-black/80 via-black/40 to-transparent"
-            initial={{ opacity: 0, height: "30%" }}
+            initial={shouldSkipEntrance ? false : { opacity: 0, height: "30%" }}
             animate={{
               opacity: isActive ? 1 : 0,
               height: isHovered ? "50%" : "30%",
@@ -84,17 +86,17 @@ export function ShowcaseCard({ item, isActive, dragOffset, index, currentIndex, 
 
           <motion.div
             className="absolute inset-x-2 bottom-2 select-none p-4 md:p-6"
-            initial={{ opacity: 0, y: 20 }}
+            initial={shouldSkipEntrance ? false : { opacity: 0, y: 20 }}
             animate={{
               opacity: isActive ? 1 : 0,
               y: isActive ? 0 : 20,
             }}
-            transition={{ duration: 0.4, delay: isActive ? 0.1 : 0 }}
+            transition={{ duration: 0.4, delay: isActive ? 0.05 : 0 }}
           >
             <motion.h2
               className="font-serif text-xl font-bold text-white sm:text-2xl md:text-3xl"
               animate={{ y: isHovered ? -5 : 0 }}
-              transition={{ duration: 0.3, delay: 0.05 }}
+              transition={{ duration: 0.3, delay: 0.02 }}
             >
               {item.title}
             </motion.h2>
@@ -105,7 +107,7 @@ export function ShowcaseCard({ item, isActive, dragOffset, index, currentIndex, 
                 opacity: isHovered ? 1 : 0,
                 y: isHovered ? 0 : 10,
               }}
-              transition={{ duration: 0.3, delay: 0.1 }}
+              transition={{ duration: 0.3, delay: 0.05 }}
             >
               {item.description}
             </motion.p>
@@ -114,11 +116,11 @@ export function ShowcaseCard({ item, isActive, dragOffset, index, currentIndex, 
           {showUploadOverlay && isActive && (
             <motion.div
               className="absolute inset-2 flex items-center justify-center z-40"
-              initial={{ opacity: 0, scale: 0.9 }}
+              initial={shouldSkipEntrance ? false : { opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.3, delay: 0.2 }}
+              transition={{ duration: 0.3, delay: 0.1 }}
             >
-              <div className="rounded-xl sm:rounded-2xl border border-white/10 bg-black/50 px-4 py-3 sm:px-6 sm:py-4 md:px-8 md:py-5 backdrop-blur-xl">
+              <div className="rounded-xl sm:rounded-2xl border border-white/10 bg-black/70 hover:bg-black/50 transition-colors duration-300 px-4 py-3 sm:px-6 sm:py-4 md:px-8 md:py-5 backdrop-blur-xl">
                 <div className="flex h-6 w-6 sm:h-8 sm:w-8 md:h-9 md:w-9 items-center justify-center rounded-full bg-white/10 mx-auto mb-2 sm:mb-3">
                   <ImageIcon className="h-3.5 w-3.5 sm:h-4 sm:w-4 md:h-5 md:w-5 text-white/70" />
                 </div>
@@ -144,7 +146,7 @@ export function ShowcaseCard({ item, isActive, dragOffset, index, currentIndex, 
                   <Button
                     variant="secondary"
                     size="sm"
-                    className="bg-white/10 hover:bg-white/20 text-white border-white/10 w-full text-xs sm:text-sm h-7 sm:h-8 md:h-9"
+                    className="bg-white/10 hover:bg-white/20 text-white border-white/10 w-full text-xs sm:text-sm h-7 sm:h-8 md:h-9 cursor-pointer"
                     onClick={onCreateText}
                     disabled={!onCreateText}
                     type="button"

@@ -134,16 +134,13 @@ export function ShowcaseSlider({ showUploadOverlay, onImageUpload, onCreateText,
 
       <NavigationDots total={showcaseItems.length} current={currentIndex} onSelect={goToSlide} colors={currentColors} />
 
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1 }}
+      <div
         className="absolute bottom-6 left-6 hidden items-center gap-3 text-white/30 md:flex"
       >
         <kbd className="rounded border border-white/10 bg-white/5 px-2 py-1 font-mono text-xs">←</kbd>
         <kbd className="rounded border border-white/10 bg-white/5 px-2 py-1 font-mono text-xs">→</kbd>
         <span className="text-xs">navigate</span>
-      </motion.div>
+      </div>
     </div>
   )
 }

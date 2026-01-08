@@ -752,7 +752,7 @@ export default function AppLayout({
                         onClick={handleCreateTextItem}
                       >
                         <Type className="h-3.5 w-3.5 mr-2" />
-                        Add Text
+                        Add Text Card
                       </Button>
                     </>
                   )}

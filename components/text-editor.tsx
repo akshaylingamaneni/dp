@@ -48,7 +48,7 @@ export function TextEditor({
   const [theme, setTheme] = useState(() => getFallbackTextTheme(themeId))
   const cardRef = useRef<HTMLDivElement>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
-  const timeoutRef = useRef<NodeJS.Timeout>(null)
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   // Sync local value when prop changes (for external updates like switching items)
   useEffect(() => {

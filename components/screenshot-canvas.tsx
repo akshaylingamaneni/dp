@@ -33,6 +33,7 @@ interface ScreenshotCanvasProps {
   canvasSize: number
   baseColor: string
   showBackgroundOnly: boolean
+  isTextMode?: boolean
   onCanvasReady?: (canvas: HTMLCanvasElement) => void
 }
 
@@ -49,6 +50,7 @@ export function ScreenshotCanvas({
   canvasSize,
   baseColor,
   showBackgroundOnly,
+  isTextMode,
   onCanvasReady,
 }: ScreenshotCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -129,8 +131,8 @@ export function ScreenshotCanvas({
 
   const canvasStyle = imageDimensions
     ? {
-      maxWidth: `${canvasSize}vw`,
-      maxHeight: `${canvasSize}vh`,
+      maxWidth: isTextMode ? `min(${canvasSize}vw, 100%)` : `${canvasSize}vw`,
+      maxHeight: isTextMode ? `min(${canvasSize}vh, 100%)` : `${canvasSize}vh`,
       aspectRatio: `${imageDimensions.width} / ${imageDimensions.height}`,
     }
     : {}
@@ -139,9 +141,11 @@ export function ScreenshotCanvas({
     <div className="flex items-center justify-center w-full h-full relative" style={{ height: "100%" }}>
       <canvas
         ref={canvasRef}
-        className="rounded-lg border-1  shadow-2xl"
+        className="rounded-lg border-1 shadow-2xl"
         style={{
           ...canvasStyle,
+          width: "auto",
+          height: "auto",
           boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(0, 0, 0, 0.05)",
         }}
       />

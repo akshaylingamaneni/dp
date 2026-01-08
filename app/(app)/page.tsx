@@ -134,6 +134,7 @@ export default function Home() {
             canvasSize={canvasSize}
             baseColor={baseColor}
             showBackgroundOnly={showBackgroundOnly}
+            isTextMode={isTextItem}
             onCanvasReady={handleCanvasReady}
           />
         </div>

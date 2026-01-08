@@ -56,17 +56,6 @@ export function HorizontalBackgroundSelector({ selected, onSelect }: HorizontalB
     }
   }, [])
 
-  useEffect(() => {
-    const viewport = getViewport()
-    if (selectedRef.current && viewport) {
-      selectedRef.current.scrollIntoView({
-        behavior: "smooth",
-        block: "nearest",
-        inline: "center",
-      })
-    }
-  }, [selected])
-
   const scroll = (direction: "left" | "right") => {
     const viewport = getViewport()
     if (viewport) {
@@ -92,26 +81,32 @@ export function HorizontalBackgroundSelector({ selected, onSelect }: HorizontalB
     onSelect(gridPatterns[newIndex].id)
   }
 
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (document.activeElement?.tagName === "INPUT" || document.activeElement?.tagName === "SELECT") {
-        return
-      }
-      if (e.key === "ArrowLeft") {
-        e.preventDefault()
-        navigatePattern("left")
-      } else if (e.key === "ArrowRight") {
-        e.preventDefault()
-        navigatePattern("right")
-      }
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "ArrowLeft") {
+      e.preventDefault()
+      e.nativeEvent.stopImmediatePropagation()
+      navigatePattern("left")
+    } else if (e.key === "ArrowRight") {
+      e.preventDefault()
+      e.nativeEvent.stopImmediatePropagation()
+      navigatePattern("right")
     }
+  }
 
-    window.addEventListener("keydown", handleKeyDown)
-    return () => window.removeEventListener("keydown", handleKeyDown)
-  }, [selected, onSelect])
+  // Effect to ensure selection is in view
+  useEffect(() => {
+    const viewport = getViewport()
+    if (selectedRef.current && viewport) {
+      selectedRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+        inline: "center",
+      })
+    }
+  }, [selected])
 
   return (
-    <div className="relative w-full" ref={scrollAreaRef}>
+    <div className="relative w-full" ref={scrollAreaRef} onKeyDown={handleKeyDown} tabIndex={0}>
       {(canScrollLeft || canScrollRight) && (
         <div className="flex items-center justify-end gap-1 mb-2 px-4">
           {canScrollLeft && (

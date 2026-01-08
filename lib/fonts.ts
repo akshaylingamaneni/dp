@@ -26,7 +26,7 @@ const fontRaleway = Raleway({ subsets: ["latin"], display: "swap" })
 
 // Static fonts (need weights)
 const fontRoboto = Roboto({
-  weight: ["100", "300", "400", "500", "700", "900"],
+  weight: ["300", "400", "500", "700", "900"],
   subsets: ["latin"],
   display: "swap",
 })

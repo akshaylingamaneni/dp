@@ -84,11 +84,11 @@ export function HorizontalBackgroundSelector({ selected, onSelect }: HorizontalB
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "ArrowLeft") {
       e.preventDefault()
-      e.nativeEvent.stopImmediatePropagation()
+      e.stopPropagation()
       navigatePattern("left")
     } else if (e.key === "ArrowRight") {
       e.preventDefault()
-      e.nativeEvent.stopImmediatePropagation()
+      e.stopPropagation()
       navigatePattern("right")
     }
   }

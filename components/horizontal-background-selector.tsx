@@ -106,7 +106,14 @@ export function HorizontalBackgroundSelector({ selected, onSelect }: HorizontalB
   }, [selected])
 
   return (
-    <div className="relative w-full" ref={scrollAreaRef} onKeyDown={handleKeyDown} tabIndex={0}>
+    <div
+      className="relative w-full"
+      ref={scrollAreaRef}
+      onKeyDown={handleKeyDown}
+      tabIndex={0}
+      role="region"
+      aria-label="Background pattern selector"
+    >
       {(canScrollLeft || canScrollRight) && (
         <div className="flex items-center justify-end gap-1 mb-2 px-4">
           {canScrollLeft && (

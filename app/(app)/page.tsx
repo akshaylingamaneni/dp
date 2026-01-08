@@ -115,6 +115,8 @@ export default function Home() {
               onPreviewReady={(dataUrl) => handleTextUpdate({ src: dataUrl })}
               title={activeItem?.name}
               onTitleChange={(value) => handleTextUpdate({ name: value })}
+              fontFamily={activeItem?.fontFamily}
+              onFontChange={(value) => handleTextUpdate({ fontFamily: value })}
             />
           </div>
         )}

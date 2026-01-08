@@ -33,6 +33,7 @@ export type ImageItem = {
   text?: string
   language?: string
   themeId?: string
+  fontFamily?: string
   background?: string
   padding?: number
   cornerRadius?: number

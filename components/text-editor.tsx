@@ -6,6 +6,7 @@ import type { Highlighter } from "shiki"
 import { TEXT_LANGUAGES, resolveTextLanguageId } from "@/lib/text-languages"
 import { ensureTextTheme, getTextHighlighter } from "@/lib/text-highlighter"
 import { DEFAULT_TEXT_THEME_ID, TEXT_THEMES, getFallbackTextTheme, resolveTextTheme } from "@/lib/text-themes"
+import { FONTS, getFontById } from "@/lib/fonts"
 import { nodeToPng } from "@/lib/text-image"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { cn } from "@/lib/utils"
@@ -24,6 +25,8 @@ interface TextEditorProps {
   onPreviewReady: (dataUrl: string) => void
   title?: string
   onTitleChange?: (value: string) => void
+  fontFamily?: string
+  onFontChange?: (value: string) => void
 }
 
 export function TextEditor({
@@ -36,6 +39,8 @@ export function TextEditor({
   onPreviewReady,
   title,
   onTitleChange,
+  fontFamily = "font-inter",
+  onFontChange,
 }: TextEditorProps) {
   const [localValue, setLocalValue] = useState(value)
   const [highlighter, setHighlighter] = useState<Highlighter | null>(null)
@@ -151,7 +156,7 @@ export function TextEditor({
     }, 500)
 
     return () => clearTimeout(timer)
-  }, [highlightedHtml, theme.id, onPreviewReady, title]) // Added title dependency to re-generate preview when title changes
+  }, [highlightedHtml, theme.id, onPreviewReady, title, fontFamily]) // Added dependencies to re-generate preview when title or font changes
 
   // Simple indent handler
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -178,10 +183,10 @@ export function TextEditor({
 
   return (
     <div className="rounded-xl border border-border bg-background/80 p-4 shadow-sm backdrop-blur">
-      <div className="flex flex-wrap items-center gap-3 pb-3">
-        <div className="flex flex-1 flex-wrap gap-2">
+      <div className="flex flex-col gap-3 pb-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="grid grid-cols-3 gap-2 sm:flex sm:flex-1 sm:items-center">
           <Select value={language} onValueChange={onLanguageChange}>
-            <SelectTrigger className="h-8 w-[150px] text-xs">
+            <SelectTrigger className="h-8 w-full sm:w-[130px] text-xs">
               <SelectValue placeholder="Language" />
             </SelectTrigger>
             <SelectContent className="max-h-[250px]" position="popper">
@@ -194,7 +199,7 @@ export function TextEditor({
             </SelectContent>
           </Select>
           <Select value={themeId} onValueChange={onThemeChange}>
-            <SelectTrigger className="h-8 w-[160px] text-xs">
+            <SelectTrigger className="h-8 w-full sm:w-[140px] text-xs">
               <SelectValue placeholder="Theme" />
             </SelectTrigger>
             <SelectContent className="max-h-[250px]" position="popper">
@@ -205,13 +210,30 @@ export function TextEditor({
               ))}
             </SelectContent>
           </Select>
+
+          <Select value={fontFamily} onValueChange={onFontChange}>
+            <SelectTrigger className="h-8 w-full sm:w-[130px] text-xs">
+              <SelectValue placeholder="Font" />
+            </SelectTrigger>
+            <SelectContent className="max-h-[250px]" position="popper">
+              {FONTS.map((font) => (
+                <SelectItem key={font.id} value={font.id} style={font.style}>
+                  {font.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
-        <span className="text-xs text-muted-foreground">Editing text card</span>
+        <span className="hidden text-xs text-muted-foreground sm:block">Editing text card</span>
       </div>
 
       <div
         ref={cardRef}
-        className={cn("border border-border/60 overflow-hidden", theme.isDark ? "text-slate-100" : "text-slate-900")}
+        className={cn(
+          "border border-border/60 overflow-hidden",
+          theme.isDark ? "text-slate-100" : "text-slate-900",
+          getFontById(fontFamily).className,
+        )}
         style={{ background: theme.background }}
       >
         <div
@@ -264,6 +286,6 @@ export function TextEditor({
           />
         </div>
       </div>
-    </div>
+    </div >
   )
 }

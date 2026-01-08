@@ -253,7 +253,7 @@ export function TextEditor({
               onChange={(e) => onTitleChange?.(e.target.value)}
               className="bg-transparent text-center font-medium uppercase tracking-wide opacity-70 focus:outline-none focus:opacity-100 pointer-events-auto w-1/3 min-w-[100px]"
               style={{ color: "inherit" }}
-              placeholder="Untitled"
+              placeholder="untitled"
               spellCheck={false}
             />
           </div>

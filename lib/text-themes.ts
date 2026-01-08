@@ -1,6 +1,8 @@
 import { bundledThemesInfo } from "shiki"
 import tailwindDark from "@/data/shiki/tailwind-dark.json"
 import tailwindLight from "@/data/shiki/tailwind-light.json"
+import vercelDark from "@/data/shiki/vercel-dark.json"
+import supabaseDark from "@/data/shiki/supabase-dark.json"
 
 type ThemeType = "dark" | "light"
 
@@ -34,6 +36,18 @@ const CUSTOM_THEMES: TextThemeOption[] = [
     type: "light",
     shiki: tailwindLight,
   },
+  {
+    id: "vercel-dark",
+    name: "Vercel",
+    type: "dark",
+    shiki: vercelDark,
+  },
+  {
+    id: "supabase-dark",
+    name: "Supabase",
+    type: "dark",
+    shiki: supabaseDark,
+  },
 ]
 
 const CUSTOM_THEME_IDS = new Set(CUSTOM_THEMES.map((theme) => theme.id))
@@ -51,7 +65,7 @@ export const TEXT_THEMES: TextThemeOption[] = [
   ...BUNDLED_THEMES,
 ]
 
-export const DEFAULT_TEXT_THEME_ID = "tailwind-dark"
+export const DEFAULT_TEXT_THEME_ID = "vercel-dark"
 
 const FALLBACK_DARK = {
   background: "#0f172a",

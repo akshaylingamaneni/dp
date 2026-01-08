@@ -1,0 +1,101 @@
+{
+  "name": "vercel-dark",
+  "colors": {
+    "foreground": "#ffffff",
+    "editor.background": "#000000",
+    "editor.foreground": "#ffffff",
+    "editorGutter.addedBackground": "#22c55e",
+    "editorGutter.deletedBackground": "#ef4444",
+    "editorGutter.modifiedBackground": "#3b82f6",
+    "terminal.background": "#000000",
+    "terminal.foreground": "#ffffff"
+  },
+  "tokenColors": [
+    {
+      "name": "Comment",
+      "scope": [
+        "comment"
+      ],
+      "settings": {
+        "foreground": "#666666"
+      }
+    },
+    {
+      "name": "String",
+      "scope": [
+        "string"
+      ],
+      "settings": {
+        "foreground": "#AAAAAA"
+      }
+    },
+    {
+      "name": "Keyword",
+      "scope": [
+        "keyword",
+        "storage"
+      ],
+      "settings": {
+        "foreground": "#FF0080"
+      }
+    },
+    {
+      "name": "Function",
+      "scope": [
+        "entity.name.function",
+        "support.function"
+      ],
+      "settings": {
+        "foreground": "#50A6FF"
+      }
+    },
+    {
+      "name": "Type",
+      "scope": [
+        "entity.name.type",
+        "support.class",
+        "support.type"
+      ],
+      "settings": {
+        "foreground": "#7928CA"
+      }
+    },
+    {
+      "name": "Variable",
+      "scope": [
+        "variable"
+      ],
+      "settings": {
+        "foreground": "#FFFFFF"
+      }
+    },
+    {
+      "name": "Constants",
+      "scope": [
+        "constant"
+      ],
+      "settings": {
+        "foreground": "#FF0080"
+      }
+    },
+    {
+      "name": "Tags",
+      "scope": [
+        "entity.name.tag"
+      ],
+      "settings": {
+        "foreground": "#FF0080"
+      }
+    },
+    {
+      "name": "Attributes",
+      "scope": [
+        "entity.other.attribute-name"
+      ],
+      "settings": {
+        "foreground": "#7928CA"
+      }
+    }
+  ],
+  "semanticHighlighting": true
+}

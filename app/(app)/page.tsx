@@ -50,7 +50,10 @@ export default function Home() {
           transition={{ duration: 0.5, delay: 0.4 }}
           className="pointer-events-none absolute left-4 top-4 z-20 sm:left-6 sm:top-6 lg:bottom-0 lg:left-10 lg:top-0 lg:flex lg:max-w-sm lg:flex-col lg:justify-center xl:left-14 xl:max-w-md"
         >
-          <div className="lg:hidden">
+          {/* Text Scrim - ensures visibility on light backgrounds */}
+          <div className="absolute -inset-24 -z-10 bg-[radial-gradient(closest-side,rgba(0,0,0,0.5)_0%,transparent_100%)] opacity-100 blur-xl lg:hidden" />
+
+          <div className="lg:hidden relative">
             <h1 className="text-sm font-medium text-white/90">
               Screenshot <span className="text-white/50">Composer</span>
             </h1>
@@ -61,7 +64,10 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="hidden lg:block">
+          <div className="hidden lg:block relative">
+            {/* Desktop Scrim - Flashlight style */}
+            <div className="absolute -inset-x-24 -inset-y-64 -z-10 bg-[radial-gradient(closest-side,rgba(0,0,0,0.3)_25%,transparent_100%)] blur-4xl opacity-100" />
+
             <h1 className="text-4xl font-bold tracking-tight text-white xl:text-5xl 2xl:text-6xl">
               Screenshot
               <br />

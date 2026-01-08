@@ -105,9 +105,9 @@ export default function Home() {
       className="w-full h-full p-4 sm:p-6 lg:p-8"
       aria-label="Screenshot editor"
     >
-      <div className="flex h-full w-full flex-col gap-6 lg:flex-row lg:items-start">
+      <div className="flex h-full w-full flex-col gap-6 lg:flex-row lg:items-start lg:gap-8">
         {isTextItem && (
-          <div className="w-full lg:w-[420px] xl:w-[480px] lg:shrink-0">
+          <div className="w-full lg:flex-1 lg:max-w-md xl:max-w-lg lg:shrink-0">
             <TextEditor
               value={activeItem?.text ?? ""}
               onChange={(value) => handleTextUpdate({ text: value })}

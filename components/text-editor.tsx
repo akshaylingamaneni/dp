@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import type { Highlighter } from "shiki"
 import { TEXT_LANGUAGES, resolveTextLanguageId } from "@/lib/text-languages"
 import { ensureTextTheme, getTextHighlighter } from "@/lib/text-highlighter"

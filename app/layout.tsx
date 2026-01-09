@@ -13,7 +13,7 @@ if (!siteUrl) {
   throw new Error("NEXT_PUBLIC_SITE_URL is not set")
 }
 const siteName = "Screenshot Composer"
-const siteDescription = "Create beautiful screenshots with gradient backgrounds, customizable padding, shadows, and corner styling. 100% free and open source."
+const siteDescription = "Create beautiful screenshots with gradient backgrounds, customizable padding, shadows, corner text, code snippets, and font selection. 100% free and open source."
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -33,6 +33,12 @@ export const metadata: Metadata = {
     "free tool",
     "screenshot beautifier",
     "social media images",
+    "corner text",
+    "text overlays",
+    "text gradients",
+    "image annotation",
+    "code snippets",
+    "syntax highlighting",
   ],
   authors: [{ name: siteName }],
   creator: siteName,

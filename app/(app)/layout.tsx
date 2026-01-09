@@ -2,7 +2,7 @@
 
 import type React from "react"
 import { useCallback, useRef, useState } from "react"
-import { Check, ChevronDown, Copy, Download, Eye, EyeOff, FileSliders, Shuffle, Upload } from "lucide-react"
+import { Check, ChevronDown, Copy, Download, Eye, EyeOff, FileSliders, Shuffle, Type, Upload } from "lucide-react"
 import JSZip from "jszip"
 import posthog from "posthog-js"
 import { HorizontalControls } from "@/components/horizontal-controls"
@@ -15,6 +15,8 @@ import { Label } from "@/components/ui/label"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { getFormatById } from "@/lib/formats"
 import { getRandomPattern } from "@/lib/patterns"
+import { DEFAULT_TEXT_THEME_ID } from "@/lib/text-themes"
+import { preloadTextHighlighter } from "@/lib/text-highlighter"
 
 function getExportCanvas(canvas: HTMLCanvasElement): HTMLCanvasElement {
   const logicalWidth = Number.parseInt(canvas.dataset.logicalWidth ?? "", 10)
@@ -43,6 +45,18 @@ function getExportCanvas(canvas: HTMLCanvasElement): HTMLCanvasElement {
   return exportCanvas
 }
 
+const DEFAULT_TEXT_SNIPPET = `const greeting = "Hello, world!"
+
+function sayHello(name: string) {
+  return \`Hello, \${name}!\`
+}
+
+console.log(sayHello(greeting))
+`
+
+if (typeof window !== "undefined") {
+  preloadTextHighlighter()
+}
 export default function AppLayout({
   children,
 }: {
@@ -83,17 +97,18 @@ export default function AppLayout({
   const [showBackgroundOnly, setShowBackgroundOnly] = useState(false)
   const [applyToAll, setApplyToAll] = useState(true)
 
-  const currentImage = images[activeIndex]
-  const effectiveBackground = currentImage?.background ?? selectedBackground
-  const effectivePadding = currentImage?.padding ?? padding[0]
-  const effectiveCornerRadius = currentImage?.cornerRadius ?? cornerRadius[0]
-  const effectiveShadow = currentImage?.shadow ?? shadow[0]
-  const effectiveShadowSettings = currentImage?.shadowSettings ?? { ...shadowSettings }
-  const effectiveCornerTexts = currentImage?.cornerTexts ?? { ...cornerTexts }
-  const effectiveTextSettings = currentImage?.textSettings ?? { ...textSettings }
-  const effectiveFormat = currentImage?.format ?? selectedFormat
-  const effectiveCanvasSize = currentImage?.canvasSize ?? canvasSize[0]
-  const effectiveBaseColor = currentImage?.baseColor ?? selectedBaseColor
+
+  const activeItem = images[activeIndex] ?? null
+  const effectiveBackground = activeItem?.background ?? selectedBackground
+  const effectivePadding = activeItem?.padding ?? padding[0]
+  const effectiveCornerRadius = activeItem?.cornerRadius ?? cornerRadius[0]
+  const effectiveShadow = activeItem?.shadow ?? shadow[0]
+  const effectiveShadowSettings = activeItem?.shadowSettings ?? { ...shadowSettings }
+  const effectiveCornerTexts = activeItem?.cornerTexts ?? { ...cornerTexts }
+  const effectiveTextSettings = activeItem?.textSettings ?? { ...textSettings }
+  const effectiveFormat = activeItem?.format ?? selectedFormat
+  const effectiveCanvasSize = activeItem?.canvasSize ?? canvasSize[0]
+  const effectiveBaseColor = activeItem?.baseColor ?? selectedBaseColor
 
   const handleBackgroundChange = useCallback((background: string) => {
     posthog.capture("background_changed", {
@@ -279,6 +294,7 @@ export default function AppLayout({
             id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
             src,
             name: file.name,
+            type: "image",
           })
           loaded++
 
@@ -317,6 +333,7 @@ export default function AppLayout({
               id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
               src,
               name: file.name,
+              type: "image",
             })
             loaded++
 
@@ -365,6 +382,38 @@ export default function AppLayout({
       link.click()
     }
   }
+
+  const handleCreateTextItem = useCallback(() => {
+    const newItem: ImageItem = {
+      id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      src: "",
+      name: "Untitled",
+      type: "text",
+      text: DEFAULT_TEXT_SNIPPET,
+      language: "typescript",
+      themeId: DEFAULT_TEXT_THEME_ID,
+    }
+    posthog.capture("text_item_created", {
+      total_items_after: images.length + 1,
+    })
+    setImages((prev) => [...prev, newItem])
+    setActiveIndex(images.length)
+    setImage(null)
+    setShowBackgroundOnly(false)
+  }, [images.length])
+
+  const handleTextUpdate = useCallback((updates: Partial<ImageItem>) => {
+    setImages((prev) => {
+      const next = [...prev]
+      const current = next[activeIndex]
+      if (!current || (current.type && current.type !== "text")) return prev
+      next[activeIndex] = { ...current, ...updates, type: "text" }
+      return next
+    })
+    if (typeof updates.src === "string") {
+      setImage(updates.src || null)
+    }
+  }, [activeIndex])
 
   const handleExportAll = async () => {
     if (images.length === 0) return
@@ -483,9 +532,8 @@ export default function AppLayout({
 
   const handleSetActiveIndex = useCallback((index: number) => {
     setActiveIndex(index)
-    if (images[index]) {
-      setImage(images[index].src)
-    }
+    const nextItem = images[index]
+    setImage(nextItem?.src || null)
   }, [images])
 
   const handleReorderImages = useCallback((fromIndex: number, toIndex: number) => {
@@ -538,7 +586,7 @@ export default function AppLayout({
     handleBackgroundChange(randomPattern.id)
   }
 
-  const showCanvas = Boolean(image || showBackgroundOnly)
+  const showCanvas = images.length > 0 || showBackgroundOnly
   const hasMultipleImages = images.length > 1
 
   return (
@@ -547,6 +595,7 @@ export default function AppLayout({
         image,
         images,
         activeIndex,
+        activeItem,
         padding: effectivePadding,
         cornerRadius: effectiveCornerRadius,
         shadow: effectiveShadow,
@@ -560,6 +609,8 @@ export default function AppLayout({
         showBackgroundOnly,
         showCanvas,
         handleImageUpload,
+        handleCreateTextItem,
+        handleTextUpdate,
         handleCanvasReady,
         setActiveIndex: handleSetActiveIndex,
         reorderImages: handleReorderImages,
@@ -676,7 +727,7 @@ export default function AppLayout({
                     )}
                     {showBackgroundOnly ? "Image" : "BG"}
                   </Button>
-                  {image && (
+                  {images.length > 0 && (
                     <>
                       <label htmlFor="image-reupload">
                         <Button variant="outline" size="sm" className="bg-transparent" asChild>
@@ -694,6 +745,15 @@ export default function AppLayout({
                         onChange={handleImageUpload}
                         className="hidden"
                       />
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="bg-transparent"
+                        onClick={handleCreateTextItem}
+                      >
+                        <Type className="h-3.5 w-3.5 mr-2" />
+                        Add Text Card
+                      </Button>
                     </>
                   )}
                   {hasMultipleImages && (

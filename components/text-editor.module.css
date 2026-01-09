@@ -1,0 +1,66 @@
+/* Grid Stack Approach: The container is a grid, and both layers occupy the same cell */
+.editorContainer {
+  display: grid;
+  grid-template-columns: 100%;
+  position: relative;
+  width: 100%;
+  min-height: 200px;
+  max-height: 600px; /* Prevent infinite growth */
+  overflow: auto; /* Allow scrolling if it gets too tall */
+  font-family: inherit;
+  line-height: 1.5;
+  font-size: 14px;
+}
+
+/* Shared typography styles */
+.highlightLayer, 
+.textareaLayer {
+  grid-area: 1 / 1 / 2 / 2; /* Stack on top of each other */
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  white-space: pre-wrap;
+  word-break: break-all;
+  padding: 1rem;
+  margin: 0;
+  border: 0;
+  width: 100%;
+  box-sizing: border-box;
+  tab-size: 2;
+}
+
+.highlightLayer {
+  position: relative; /* It participates in the grid flow, establishing height */
+  pointer-events: none;
+  color: var(--editor-text);
+  z-index: 0;
+}
+
+.highlightLayer code,
+.highlightLayer pre {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  margin: 0;
+  padding: 0;
+  background: transparent !important; /* Override inline styles from shiki */
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.textareaLayer {
+  position: relative; /* Also stack */
+  z-index: 1;
+  background: transparent;
+  color: transparent;
+  caret-color: var(--editor-text);
+  resize: none; /* Auto-growth handles this */
+  outline: none;
+  overflow: hidden; /* No scrollbars on textarea itself */
+  height: 100%; /* Match height of container (which matches highlightLayer) */
+}
+
+.textareaLayer::selection {
+  background-color: rgba(59, 130, 246, 0.3);
+  color: transparent;
+}

@@ -1,0 +1,13 @@
+.card {
+  width: fit-content;
+}
+
+.card pre {
+  margin: 0;
+  background: transparent !important;
+  white-space: pre-wrap;
+}
+
+.card code {
+  font-family: inherit;
+}

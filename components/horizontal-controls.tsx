@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import type { ShadowSettings, CornerTexts, TextSettings } from "@/components/screenshot-shell-context"
+import { FONTS } from "@/lib/fonts"
 import { cn } from "@/lib/utils"
 
 const TEXT_GRADIENTS = [
@@ -71,6 +72,7 @@ export function HorizontalControls({
   const scrollAreaRef = useRef<HTMLDivElement>(null)
   const [canScrollLeft, setCanScrollLeft] = useState(false)
   const [canScrollRight, setCanScrollRight] = useState(true)
+  const [activeSlider, setActiveSlider] = useState<string | null>(null)
 
   const getViewport = () => {
     return scrollAreaRef.current?.querySelector('[data-slot="scroll-area-viewport"]') as HTMLDivElement | null
@@ -183,24 +185,49 @@ export function HorizontalControls({
 
           <div className="flex flex-col gap-2 min-w-[180px] snap-start shrink-0">
             <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Padding</Label>
-            <div className="flex items-center gap-3">
-              <Slider min={0} max={160} step={8} value={padding} onValueChange={onPaddingChange} className="flex-1" />
-              <span className="text-xs text-muted-foreground tabular-nums w-10 text-right shrink-0">{padding[0]}</span>
+            <div className="flex items-center gap-2">
+              <Slider
+                min={0}
+                max={160}
+                step={8}
+                value={padding}
+                onValueChange={onPaddingChange}
+                onPointerDown={() => setActiveSlider("padding")}
+                onPointerUp={() => setActiveSlider(null)}
+                className="flex-1"
+              />
+              <span
+                className={cn(
+                  "text-xs tabular-nums w-8 text-right shrink-0 transition-colors duration-200",
+                  activeSlider === "padding" ? "text-foreground font-medium" : "text-muted-foreground"
+                )}
+              >
+                {padding[0]}
+              </span>
             </div>
           </div>
 
           <div className="flex flex-col gap-2 min-w-[180px] snap-start shrink-0">
             <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Radius</Label>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
               <Slider
                 min={0}
                 max={48}
                 step={4}
                 value={cornerRadius}
                 onValueChange={onCornerRadiusChange}
+                onPointerDown={() => setActiveSlider("radius")}
+                onPointerUp={() => setActiveSlider(null)}
                 className="flex-1"
               />
-              <span className="text-xs text-muted-foreground tabular-nums w-10 text-right shrink-0">{cornerRadius[0]}</span>
+              <span
+                className={cn(
+                  "text-xs tabular-nums w-8 text-right shrink-0 transition-colors duration-200",
+                  activeSlider === "radius" ? "text-foreground font-medium" : "text-muted-foreground"
+                )}
+              >
+                {cornerRadius[0]}
+              </span>
             </div>
           </div>
 
@@ -292,9 +319,25 @@ export function HorizontalControls({
                 </PopoverContent>
               </Popover>
             </div>
-            <div className="flex items-center gap-3">
-              <Slider min={0} max={100} step={5} value={shadow} onValueChange={onShadowChange} className="flex-1" />
-              <span className="text-xs text-muted-foreground tabular-nums w-10 text-right shrink-0">{shadow[0]}</span>
+            <div className="flex items-center gap-2">
+              <Slider
+                min={0}
+                max={100}
+                step={5}
+                value={shadow}
+                onValueChange={onShadowChange}
+                onPointerDown={() => setActiveSlider("shadow")}
+                onPointerUp={() => setActiveSlider(null)}
+                className="flex-1"
+              />
+              <span
+                className={cn(
+                  "text-xs tabular-nums w-8 text-right shrink-0 transition-colors duration-200",
+                  activeSlider === "shadow" ? "text-foreground font-medium" : "text-muted-foreground"
+                )}
+              >
+                {shadow[0]}
+              </span>
             </div>
           </div>
 
@@ -395,6 +438,25 @@ export function HorizontalControls({
                       </div>
 
                       <div className="space-y-2">
+                        <Label className="text-xs">Font Family</Label>
+                        <Select
+                          value={textSettings.fontFamily}
+                          onValueChange={(value) => onTextSettingsChange({ ...textSettings, fontFamily: value })}
+                        >
+                          <SelectTrigger size="sm" className="w-full h-8 text-xs">
+                            <SelectValue placeholder="Select font" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {FONTS.map((font) => (
+                              <SelectItem key={font.id} value={font.name} className="text-xs">
+                                <span style={font.style}>{font.name}</span>
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div className="space-y-2">
                         <Label className="text-xs">Text Gradient</Label>
                         <Select
                           value={textSettings.textGradient}
@@ -453,9 +515,25 @@ export function HorizontalControls({
 
           <div className="flex flex-col gap-2 min-w-[180px] snap-start shrink-0">
             <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Size</Label>
-            <div className="flex items-center gap-3">
-              <Slider min={10} max={100} step={5} value={canvasSize} onValueChange={onCanvasSizeChange} className="flex-1" />
-              <span className="text-xs text-muted-foreground tabular-nums w-10 text-right shrink-0">{canvasSize[0]}%</span>
+            <div className="flex items-center gap-2">
+              <Slider
+                min={10}
+                max={100}
+                step={5}
+                value={canvasSize}
+                onValueChange={onCanvasSizeChange}
+                onPointerDown={() => setActiveSlider("size")}
+                onPointerUp={() => setActiveSlider(null)}
+                className="flex-1"
+              />
+              <span
+                className={cn(
+                  "text-xs tabular-nums w-8 text-right shrink-0 transition-colors duration-200",
+                  activeSlider === "size" ? "text-foreground font-medium" : "text-muted-foreground"
+                )}
+              >
+                {canvasSize[0]}%
+              </span>
             </div>
           </div>
         </div>

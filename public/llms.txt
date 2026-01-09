@@ -9,12 +9,16 @@ Screenshot Composer is a browser-based tool that transforms plain screenshots in
 ## Key Features
 
 - **Gradient Backgrounds**: Choose from a variety of beautiful gradient patterns and solid colors
+- **Base Color Backgrounds**: Choose solid colors or auto-detect from image
 - **Customizable Padding**: Adjust the spacing around your screenshot
 - **Corner Radius**: Apply rounded corners with adjustable radius
-- **Shadow Effects**: Add depth with customizable shadow settings (color, offset, blur)
+- **Shadow Effects**: Add depth with customizable shadow settings (color, offset, blur, fill style)
 - **Batch Processing**: Upload and process multiple images at once
 - **Apply to All**: Apply the same style to all images in a batch
 - **Corner Text Labels**: Add text overlays in any corner with font and opacity controls
+- **Text/Code Snippets**: Create beautiful code snippets or text cards with syntax highlighting and window controls
+- **Font Selection**: Choose from a curated list of fonts for your text
+- **Text Gradients**: Apply beautiful gradient effects to your text labels
 - **Format Presets**: Export in various aspect ratios (16:9, 4:3, 1:1, etc.)
 - **Multiple Export Options**: Download individual images, export all, or download as ZIP
 - **Copy to Clipboard**: Instantly copy styled screenshots

@@ -1,6 +1,6 @@
 "use client"
 
-import { X } from "lucide-react"
+import { Type, X } from "lucide-react"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
@@ -61,7 +61,7 @@ export function ImageCarousel({ images, activeIndex, onSelect, onReorder, onRemo
     <div className="w-full border-b border-border bg-background/95 backdrop-blur ">
       <div className="flex items-center gap-2 px-4 py-5">
         <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider shrink-0">
-          Images ({images.length})
+          Items ({images.length})
         </span>
         <div className="flex-1 min-w-0">
           <ScrollArea className="w-full" orientation="horizontal">
@@ -86,12 +86,23 @@ export function ImageCarousel({ images, activeIndex, onSelect, onReorder, onRemo
                     dragOverIndex === index && draggedIndex !== index && "scale-110 border-primary"
                   )}
                 >
-                  <img
-                    src={image.src}
-                    alt={image.name}
-                    className="w-full h-full object-cover"
-                    draggable={false}
-                  />
+                  {image.src ? (
+                    <img
+                      src={image.src}
+                      alt={image.name}
+                      className="w-full h-full object-cover"
+                      draggable={false}
+                    />
+                  ) : (
+                    <div className="flex h-full w-full items-center justify-center bg-muted text-muted-foreground">
+                      <Type className="h-5 w-5" />
+                    </div>
+                  )}
+                  {image.type === "text" && (
+                    <span className="absolute bottom-1 left-1 rounded bg-black/60 px-1.5 py-0.5 text-[10px] text-white">
+                      Text
+                    </span>
+                  )}
                   <Button
                     variant="destructive"
                     size="icon"

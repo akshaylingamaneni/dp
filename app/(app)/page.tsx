@@ -7,10 +7,13 @@ import posthog from "posthog-js"
 import { ScreenshotCanvas } from "@/components/screenshot-canvas"
 import { useScreenshotShell } from "@/components/screenshot-shell-context"
 import { ShowcaseSlider } from "@/components/showcase-slider"
+import { TextEditor } from "@/components/text-editor"
+import { DEFAULT_TEXT_THEME_ID } from "@/lib/text-themes"
 
 export default function Home() {
   const {
     image,
+    activeItem,
     padding,
     cornerRadius,
     shadow,
@@ -24,21 +27,30 @@ export default function Home() {
     showBackgroundOnly,
     showCanvas,
     handleImageUpload,
+    handleCreateTextItem,
+    handleTextUpdate,
     handleCanvasReady,
   } = useScreenshotShell()
+
+  const isTextItem = activeItem?.type === "text"
 
   if (!showCanvas) {
     return (
       <section className="absolute inset-0 overflow-hidden" aria-label="Screenshot Composer landing">
-        <ShowcaseSlider showUploadOverlay onImageUpload={handleImageUpload} />
+        <ShowcaseSlider
+          showUploadOverlay
+          onImageUpload={handleImageUpload}
+          onCreateText={handleCreateTextItem}
+          selectedBackground={background}
+        />
 
         <motion.header
-          initial={{ opacity: 0, x: -10 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5, delay: 0.4 }}
           className="pointer-events-none absolute left-4 top-4 z-20 sm:left-6 sm:top-6 lg:bottom-0 lg:left-10 lg:top-0 lg:flex lg:max-w-sm lg:flex-col lg:justify-center xl:left-14 xl:max-w-md"
         >
-          <div className="lg:hidden">
+          {/* Text Scrim - ensures visibility on light backgrounds */}
+          <div className="absolute -inset-24 -z-10 bg-[radial-gradient(closest-side,rgba(0,0,0,0.5)_0%,transparent_100%)] opacity-100 blur-xl lg:hidden" />
+
+          <div className="lg:hidden relative">
             <h1 className="text-sm font-medium text-white/90">
               Screenshot <span className="text-white/50">Composer</span>
             </h1>
@@ -49,7 +61,10 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="hidden lg:block">
+          <div className="hidden lg:block relative">
+            {/* Desktop Scrim - Flashlight style */}
+            <div className="absolute -inset-x-24 -inset-y-64 -z-10 bg-[radial-gradient(closest-side,rgba(0,0,0,0.3)_25%,transparent_100%)] blur-4xl opacity-100" />
+
             <h1 className="text-4xl font-bold tracking-tight text-white xl:text-5xl 2xl:text-6xl">
               Screenshot
               <br />
@@ -84,24 +99,46 @@ export default function Home() {
 
   return (
     <section
-      className="w-full h-full flex items-center justify-center p-4 sm:p-6 lg:p-8"
+      className="w-full h-full p-4 sm:p-6 lg:p-8"
       aria-label="Screenshot editor"
     >
-      <ScreenshotCanvas
-        image={image}
-        padding={padding}
-        cornerRadius={cornerRadius}
-        background={background}
-        format={format}
-        shadow={shadow}
-        shadowSettings={shadowSettings}
-        cornerTexts={cornerTexts}
-        textSettings={textSettings}
-        canvasSize={canvasSize}
-        baseColor={baseColor}
-        showBackgroundOnly={showBackgroundOnly}
-        onCanvasReady={handleCanvasReady}
-      />
+      <div className="flex h-full w-full flex-col gap-6 lg:flex-row lg:items-start lg:gap-8">
+        {isTextItem && (
+          <div className="w-full lg:flex-1 lg:max-w-md xl:max-w-lg lg:shrink-0">
+            <TextEditor
+              value={activeItem?.text ?? ""}
+              onChange={(value) => handleTextUpdate({ text: value })}
+              language={activeItem?.language ?? "auto"}
+              onLanguageChange={(value) => handleTextUpdate({ language: value })}
+              themeId={activeItem?.themeId ?? DEFAULT_TEXT_THEME_ID}
+              onThemeChange={(value) => handleTextUpdate({ themeId: value })}
+              onPreviewReady={(dataUrl) => handleTextUpdate({ src: dataUrl })}
+              title={activeItem?.name}
+              onTitleChange={(value) => handleTextUpdate({ name: value })}
+              fontFamily={activeItem?.fontFamily}
+              onFontChange={(value) => handleTextUpdate({ fontFamily: value })}
+            />
+          </div>
+        )}
+        <div className="flex flex-1 items-center justify-center min-w-0 h-full">
+          <ScreenshotCanvas
+            image={image}
+            padding={padding}
+            cornerRadius={cornerRadius}
+            background={background}
+            format={format}
+            shadow={shadow}
+            shadowSettings={shadowSettings}
+            cornerTexts={cornerTexts}
+            textSettings={textSettings}
+            canvasSize={canvasSize}
+            baseColor={baseColor}
+            showBackgroundOnly={showBackgroundOnly}
+            isTextMode={isTextItem}
+            onCanvasReady={handleCanvasReady}
+          />
+        </div>
+      </div>
     </section>
   )
 }

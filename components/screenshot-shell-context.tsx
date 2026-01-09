@@ -29,6 +29,11 @@ export type ImageItem = {
   id: string
   src: string
   name: string
+  type?: "image" | "text"
+  text?: string
+  language?: string
+  themeId?: string
+  fontFamily?: string
   background?: string
   padding?: number
   cornerRadius?: number
@@ -45,6 +50,7 @@ export type ScreenshotShellContextValue = {
   image: string | null
   images: ImageItem[]
   activeIndex: number
+  activeItem: ImageItem | null
   padding: number
   cornerRadius: number
   shadow: number
@@ -58,6 +64,8 @@ export type ScreenshotShellContextValue = {
   showBackgroundOnly: boolean
   showCanvas: boolean
   handleImageUpload: (event: React.ChangeEvent<HTMLInputElement>) => void
+  handleCreateTextItem: () => void
+  handleTextUpdate: (updates: Partial<ImageItem>) => void
   handleCanvasReady: (canvas: HTMLCanvasElement, imageId?: string) => void
   setActiveIndex: (index: number) => void
   reorderImages: (fromIndex: number, toIndex: number) => void
